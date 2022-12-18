@@ -50,6 +50,7 @@
         "webpack-remove-empty-scripts": "^1.0.1"
     },
     "dependencies": {
-        "eslint-plugin-html": "^7.1.0"
+        "eslint-plugin-html": "^7.1.0",
+        "normalize.css": "^8.0.1"
     }
 }

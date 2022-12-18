@@ -1,3 +1,49 @@
-header {
-    background-color: red;
+body{
+    font-family: 'Montserrat';
+    font-size: 16px;
+    line-height: 120%;
+}
+.header {
+    padding: 25px 0;
+    max-width: 1108px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    &__cart{
+        display: flex;
+        align-items: flex-end;
+    }
+    &__logo-link{
+        display: flex;
+        align-items: flex-end;
+    }
+    &__logo-img{
+        margin-right: 7px;
+    }
+    &__logo-title{
+        font-weight: bold;
+        font-size: 55px;
+        color: $green;
+    }
+}
+
+.cart-total{
+    font-size: 18px;
+    &__title{
+        font-weight: bold;
+        color: $green;
+        margin-right: 9px;
+    }
+    &__price,
+    &__items{
+        color : $red;
+    }
+}
+
+.cart-link{
+    margin-left: 25px;
+    &__icon{
+        vertical-align: bottom;
+    }
 }
