@@ -1,15 +1,15 @@
 export class AbstractView {
-  title: string;
+    title: string;
 
-  constructor() {
-    this.title = "RS Store - ";
-  }
+    constructor() {
+        this.title = 'RS Store - ';
+    }
 
-  setTitle(title: string) {
-    document.title = this.title + title;
-  }
+    setTitle(title: string) {
+        document.title = this.title + title;
+    }
 
-  async getHtml() {
-    return "";
-  }
+    async getHtml() {
+        return '';
+    }
 }

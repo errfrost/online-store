@@ -1,10 +1,10 @@
-import { AbstractView } from "../view/AbstractView";
+import { AbstractView } from '../view/AbstractView';
 
 export interface View {
-  new (): AbstractView;
+    new (): AbstractView;
 }
 
 export interface Router {
-  path: string;
-  view: View;
+    path: string;
+    view: View;
 }

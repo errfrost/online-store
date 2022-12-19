@@ -97,7 +97,7 @@ module.exports = ({ development }) => ({
         new CleanWebpackPlugin(),
     ],
     resolve: {
-        extensions: ['.ts','.js'],
+        extensions: ['.ts', '.js'],
     },
     ...devServer(development),
 });

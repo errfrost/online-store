@@ -1,4 +1,4 @@
-body{
+body {
     font-family: 'Montserrat';
     font-size: 16px;
     line-height: 120%;
@@ -10,40 +10,40 @@ body{
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    &__cart{
+    &__cart {
         display: flex;
         align-items: flex-end;
     }
-    &__logo-link{
+    &__logo-link {
         display: flex;
         align-items: flex-end;
     }
-    &__logo-img{
+    &__logo-img {
         margin-right: 7px;
     }
-    &__logo-title{
+    &__logo-title {
         font-weight: bold;
         font-size: 55px;
         color: $green;
     }
 }
 
-.cart-total{
+.cart-total {
     font-size: 18px;
-    &__title{
+    &__title {
         font-weight: bold;
         color: $green;
         margin-right: 9px;
     }
     &__price,
-    &__items{
-        color : $red;
+    &__items {
+        color: $red;
     }
 }
 
-.cart-link{
+.cart-link {
     margin-left: 25px;
-    &__icon{
+    &__icon {
         vertical-align: bottom;
     }
 }
