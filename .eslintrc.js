@@ -7,6 +7,7 @@ module.exports = {
         'plugin:@typescript-eslint/recommended',
         'plugin:@typescript-eslint/recommended-requiring-type-checking',
         'airbnb-base',
+        'airbnb-typescript/base',
         'prettier',
     ],
     parser: '@typescript-eslint/parser',
@@ -24,5 +25,15 @@ module.exports = {
         'no-new': 'off',
         'no-return-assign': 'off',
         '@typescript-eslint/no-explicit-any': 2,
+        'import/prefer-default-export': 0,
     },
+    settings: {
+        'import/resolver': {
+            node: {
+                extensions: ['.js', '.jsx', '.ts', '.tsx'],
+                moduleDirectory: ['node_modules', 'src/'],
+            },
+        },
+    }
+    
 };
