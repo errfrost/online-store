@@ -1,2 +1,2 @@
 import './assets/scss/style.scss';
-import './ts/router.ts';
+import './ts/router';
