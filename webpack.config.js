@@ -30,6 +30,7 @@ module.exports = ({ development }) => ({
     },
     context: path.resolve(__dirname, 'src'),
     output: {
+        publicPath: '/',
         filename: '[name].[contenthash].js',
         path: path.resolve(__dirname, 'dist'),
         assetModuleFilename: '[file]',
@@ -97,7 +98,7 @@ module.exports = ({ development }) => ({
         new CleanWebpackPlugin(),
     ],
     resolve: {
-        extensions: ['.ts','.js'],
+        extensions: ['.ts', '.js'],
     },
     ...devServer(development),
 });
