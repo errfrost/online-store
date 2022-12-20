@@ -1,4 +1,7 @@
 export class AbstractView {
+    mounted() {
+        throw new Error('Method not implemented.');
+    }
     title: string;
 
     constructor() {

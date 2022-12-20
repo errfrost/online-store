@@ -1,5 +1,7 @@
 import { AbstractView } from './AbstractView';
-import { ProductCards } from '../service/StoreService';
+import { ProductCard } from '../service/StoreService';
+import { loadProducts, mount } from '../helpers/generate-cards';
+import { IProducts } from '../interfaces';
 export class Home extends AbstractView {
     constructor() {
         super();
@@ -10,5 +12,15 @@ export class Home extends AbstractView {
         return `
       <h1>Home</h1>
     `;
+    }
+
+    async mounted() {
+        const products = (await loadProducts()) as unknown as IProducts;
+        const page = document.querySelector('#main-content');
+        for (let item in products) {
+            const card = new ProductCard(products[item]);
+
+            mount(page!, card);
+        }
     }
 }

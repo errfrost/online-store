@@ -32,6 +32,7 @@ async function router() {
     const view = new match.route.view();
 
     (document.querySelector('.main') as HTMLElement).innerHTML = await view.getHtml();
+    await view.mounted();
 }
 
 window.addEventListener('popstate', router);
