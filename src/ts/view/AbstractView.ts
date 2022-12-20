@@ -1,15 +1,21 @@
+import { QueryStringParams } from '../types/type';
+
 export class AbstractView {
-  title: string;
+    title: string;
 
-  constructor() {
-    this.title = "RS Store - ";
-  }
+    params: QueryStringParams = {};
 
-  setTitle(title: string) {
-    document.title = this.title + title;
-  }
+    constructor(params: QueryStringParams) {
+        if (params) {this.params = params;console.log(params);
+        }
+        this.title = 'RS Store - ';
+    }
 
-  async getHtml() {
-    return "";
-  }
+    setTitle(title: string) {
+        document.title = this.title + title;
+    }
+
+    async getHtml() {
+        return '';
+    }
 }
