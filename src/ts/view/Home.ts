@@ -1,10 +1,14 @@
 import { AbstractView } from './AbstractView';
+import { QueryStringParams } from '../types/type';
 import { ProductCard } from '../service/StoreService';
 import { loadProducts, mount } from '../helpers/generate-cards';
 import { IProducts } from '../interfaces';
+import { QueryStringParams } from '../types/type';
+
+
 export class Home extends AbstractView {
-    constructor() {
-        super();
+    constructor(params: QueryStringParams) {
+        super(params);
         this.setTitle('Home');
     }
 

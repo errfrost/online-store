@@ -1,8 +1,9 @@
 import { AbstractView } from './AbstractView';
+import { QueryStringParams } from '../types/type';
 
 export class Page404 extends AbstractView {
-    constructor() {
-        super();
+    constructor(params: QueryStringParams) {
+        super(params);
         this.setTitle('404 Not Found');
     }
 
