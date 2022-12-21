@@ -1,5 +1,5 @@
 import { ProductCard } from '../service/StoreService';
-import { LoaderOption } from '../interfaces';
+import { LoaderOption } from '../types/interface';
 
 export function generateCard(card: ProductCard) {
     return `

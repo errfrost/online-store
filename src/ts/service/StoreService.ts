@@ -1,4 +1,4 @@
-import { IProductCard } from '../interfaces';
+import { IProductCard } from '../types/interface';
 
 export class ProductCard {
     constructor(public product: IProductCard) {}

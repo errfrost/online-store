@@ -2,7 +2,7 @@ import { AbstractView } from './AbstractView';
 import { QueryStringParams } from '../types/type';
 import { ProductCard } from '../service/StoreService';
 import { loadProducts, mount } from '../helpers/generate-cards';
-import { IProducts } from '../interfaces';
+import { IProducts } from '../types/interface';
 
 
 export class Home extends AbstractView {
