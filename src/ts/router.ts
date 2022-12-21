@@ -12,6 +12,7 @@ function getParams(match: RouterMatch) {
     const keys = Array.from(match.route.path.matchAll(/:(\w+)/g)).map((result) => result[1]);
 
     return Object.fromEntries(keys.map((key, i) => [key, values[i]]));
+
 }
 
 async function router() {
@@ -39,6 +40,7 @@ async function router() {
     const view = new match.route.view(getParams(match));
     try {
         (document.querySelector('.main') as HTMLElement).innerHTML = await view.getHtml();
+        await view.mounted();
     } catch (error) {
         (document.querySelector('.main') as HTMLElement).innerHTML = 'error';
     }

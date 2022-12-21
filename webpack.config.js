@@ -71,6 +71,9 @@ module.exports = ({ development }) => ({
             },
         ],
     },
+    experiments: {
+        topLevelAwait: true,
+    },
     optimization: {
         minimize: true,
     },
