@@ -6,7 +6,7 @@ export class AbstractView {
     params: QueryStringParams = {};
 
     constructor(params: QueryStringParams) {
-        if (params) {this.params = params;console.log(params);
+        if (params) {this.params = params;
         }
         this.title = 'RS Store - ';
     }
