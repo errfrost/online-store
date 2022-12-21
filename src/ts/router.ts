@@ -40,7 +40,7 @@ async function router() {
     const view = new match.route.view(getParams(match));
     try {
         (document.querySelector('.main') as HTMLElement).innerHTML = await view.getHtml();
-        await view.mounted();
+        view.mounted();
     } catch (error) {
         (document.querySelector('.main') as HTMLElement).innerHTML = 'error';
     }
