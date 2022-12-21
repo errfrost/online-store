@@ -1,3 +1,2 @@
 import './assets/scss/style.scss';
-
-console.log('test');
+import './ts/router';

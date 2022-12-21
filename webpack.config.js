@@ -13,6 +13,7 @@ const devServer = (isDev) =>
               devServer: {
                   open: true,
                   port: 8080,
+                  hot: true,
                   historyApiFallback: true,
                   static: {
                       directory: srcPath,
@@ -29,7 +30,7 @@ module.exports = ({ development }) => ({
     },
     context: path.resolve(__dirname, 'src'),
     output: {
-        publicPath: './',
+        publicPath: development ? '/' : '',
         filename: '[name].[contenthash].js',
         path: path.resolve(__dirname, 'dist'),
         assetModuleFilename: '[file]',
@@ -97,7 +98,7 @@ module.exports = ({ development }) => ({
         new CleanWebpackPlugin(),
     ],
     resolve: {
-        extensions: ['.ts','.js'],
+        extensions: ['.ts', '.js'],
     },
     ...devServer(development),
 });
