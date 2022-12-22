@@ -3,6 +3,7 @@ import { QueryStringParams } from '../types/type';
 import { ProductCard } from '../service/StoreService';
 import { loadProducts, mount } from '../helpers/generate-cards';
 import { IProducts } from '../types/interface';
+import { search } from '../helpers/search';
 
 export class Home extends AbstractView {
     constructor(params: QueryStringParams) {
@@ -41,13 +42,39 @@ export class Home extends AbstractView {
     `;
     }
 
+    async bindListeners() {
+        document.querySelector('.product-search')?.addEventListener('keypress', async (e) => {
+            if ((e as KeyboardEvent).key === 'Enter') {
+                const target = e.target as HTMLInputElement;
+                const products = (await loadProducts()) as unknown as IProducts;
+                search(target.value.toLowerCase(), products);
+                if (window.history.pushState) {
+                    var newurl =
+                        window.location.protocol +
+                        '//' +
+                        window.location.host +
+                        window.location.pathname +
+                        '?search=' +
+                        target.value.toLowerCase();
+                    window.history.pushState({ path: newurl }, '', newurl);
+                }
+            }
+        });
+    }
+
     async mounted() {
         const products = (await loadProducts()) as unknown as IProducts;
         const page = document.querySelector('.products-list');
+        const results = document.querySelector('.products-count');
+        page!.textContent = '';
+        let resultsCount: number = 0;
         for (let item in products) {
             const card = new ProductCard(products[item]);
 
             mount(page!, card);
+            resultsCount++;
         }
+        results!.textContent = `${resultsCount} Results`;
+        this.bindListeners();
     }
 }
