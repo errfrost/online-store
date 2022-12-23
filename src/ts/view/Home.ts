@@ -44,11 +44,28 @@ export class Home extends AbstractView {
     `;
     }
 
+    updateQueryStringParameter(uri: string, key: string, value: string) {
+      var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
+      var separator = uri.indexOf('?') !== -1 ? "&" : "?";
+      if (uri.match(re)) {
+        return uri.replace(re, '$1' + key + "=" + value + '$2');
+      }
+      else {
+        return uri + separator + key + "=" + value;
+      }
+    }
+
     async prepareSearch() {
         let filterSearch: string = (document.querySelector('.product-search') as HTMLInputElement).value.toLowerCase();
         let filterSort: string = (document.querySelector('.product-sort') as HTMLSelectElement).value;
         const products = (await loadProducts()) as unknown as IProducts;
         search(products, filterSearch, filterSort);
+        
+        let url: string = window.location.pathname;
+        if (filterSearch !== '') url = this.updateQueryStringParameter(url, 'search', filterSearch);
+        if (filterSort !== '') url = this.updateQueryStringParameter(url, 'sort', filterSort);
+        window.history.pushState({ path: url }, '', url);
+
     }
 
     async bindListeners() {
