@@ -23,9 +23,11 @@ export class Home extends AbstractView {
                         <div class="sort-bar">
                             <span>Sort:</span>
                             <select class="product-sort">
-                                <option value="1" selected="selected">Default</option>
-                                <option value="2">Price ASC</option>
-                                <option value="3">Price DESC</option>
+                                <option value="" selected="selected">Default</option>
+                                <option value="price.asc">Price ASC</option>
+                                <option value="price.desc">Price DESC</option>
+                                <option value="rating.asc">Rating ASC</option>
+                                <option value="rating.desc">Rating DESC</option>
                             </select>
                         </div>
                         <div class="search-bar">
@@ -42,39 +44,27 @@ export class Home extends AbstractView {
     `;
     }
 
+    async prepareSearch() {
+        let filterSearch: string = (document.querySelector('.product-search') as HTMLInputElement).value.toLowerCase();
+        let filterSort: string = (document.querySelector('.product-sort') as HTMLSelectElement).value;
+        const products = (await loadProducts()) as unknown as IProducts;
+        search(products, filterSearch, filterSort);
+    }
+
     async bindListeners() {
         document.querySelector('.product-search')?.addEventListener('keypress', async (e) => {
             if ((e as KeyboardEvent).key === 'Enter') {
-                const target = e.target as HTMLInputElement;
-                const products = (await loadProducts()) as unknown as IProducts;
-                search(target.value.toLowerCase(), products);
-                if (window.history.pushState) {
-                    var newurl =
-                        window.location.protocol +
-                        '//' +
-                        window.location.host +
-                        window.location.pathname +
-                        '?search=' +
-                        target.value.toLowerCase();
-                    window.history.pushState({ path: newurl }, '', newurl);
-                }
+                await this.prepareSearch();
             }
+        });
+        document.querySelector('.product-sort')?.addEventListener('change', async (e) => {
+            await this.prepareSearch();
         });
     }
 
     async mounted() {
         const products = (await loadProducts()) as unknown as IProducts;
-        const page = document.querySelector('.products-list');
-        const results = document.querySelector('.products-count');
-        page!.textContent = '';
-        let resultsCount: number = 0;
-        for (let item in products) {
-            const card = new ProductCard(products[item]);
-
-            mount(page!, card);
-            resultsCount++;
-        }
-        results!.textContent = `${resultsCount} Results`;
+        search(products, '', '');
         this.bindListeners();
     }
 }
