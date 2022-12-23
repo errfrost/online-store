@@ -45,14 +45,13 @@ export class Home extends AbstractView {
     }
 
     updateQueryStringParameter(uri: string, key: string, value: string) {
-      var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
-      var separator = uri.indexOf('?') !== -1 ? "&" : "?";
-      if (uri.match(re)) {
-        return uri.replace(re, '$1' + key + "=" + value + '$2');
-      }
-      else {
-        return uri + separator + key + "=" + value;
-      }
+        var re = new RegExp('([?&])' + key + '=.*?(&|$)', 'i');
+        var separator = uri.indexOf('?') !== -1 ? '&' : '?';
+        if (uri.match(re)) {
+            return uri.replace(re, '$1' + key + '=' + value + '$2');
+        } else {
+            return uri + separator + key + '=' + value;
+        }
     }
 
     async prepareSearch() {
@@ -60,12 +59,11 @@ export class Home extends AbstractView {
         let filterSort: string = (document.querySelector('.product-sort') as HTMLSelectElement).value;
         const products = (await loadProducts()) as unknown as IProducts;
         search(products, filterSearch, filterSort);
-        
-        let url: string = window.location.pathname;
+
+        let url: string = window.location.href;
         if (filterSearch !== '') url = this.updateQueryStringParameter(url, 'search', filterSearch);
         if (filterSort !== '') url = this.updateQueryStringParameter(url, 'sort', filterSort);
         window.history.pushState({ path: url }, '', url);
-
     }
 
     async bindListeners() {
@@ -81,7 +79,16 @@ export class Home extends AbstractView {
 
     async mounted() {
         const products = (await loadProducts()) as unknown as IProducts;
-        search(products, '', '');
+
+        let params = new URL(window.location.href).searchParams;
+
+        let searchParam = params.has('search') ? params.get('search') : '';
+        (document.querySelector('.product-search') as HTMLInputElement).value = searchParam as string;
+
+        let sortParam = params.has('sort') ? params.get('sort') : '';
+        (document.querySelector('.product-sort') as HTMLSelectElement).value = sortParam as string;
+
+        search(products, searchParam!, sortParam!);
         this.bindListeners();
     }
 }
