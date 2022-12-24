@@ -12,7 +12,7 @@ export function generateCard(card: ProductCard) {
             <span class="product-card__category">${card.product.category}</span>
             <span class="product-card__brand">${card.product.brand}</span>
             <span class="product-card__rating">Rating: <b>${card.product.rating}</b></span>
-            <button class="product-card__button">Add</button>
+            <button class="product-card__button" data-productId="${card.product.id}">Add</button>
         </div>
         `;
 }

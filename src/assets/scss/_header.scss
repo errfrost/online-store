@@ -47,7 +47,24 @@ body {
 
 .cart-link {
     margin-left: 25px;
+    position: relative;
     &__icon {
         vertical-align: bottom;
+        
     }
+}
+.cart-counter{
+    position: absolute;
+    left: 28px;
+    top: 50px;
+    font-size: 22px;
+    font-weight: bold;
+    background-color: $red;
+    color: #fff;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
 }

@@ -2,9 +2,12 @@ import { AbstractView } from './AbstractView';
 import { QueryStringParams } from '../types/type';
 import { ProductCard } from '../service/StoreService';
 import { loadProducts, mount } from '../helpers/generate-cards';
+import { getProductId } from '../helpers/addProduct';
 import { IProducts } from '../types/interface';
 import { search } from '../helpers/search';
-
+import { Cart} from '../service/Cart';
+const shopCart = new Cart();
+const cartCounter = document.querySelector('.cart-counter');
 export class Home extends AbstractView {
     constructor(params: QueryStringParams) {
         super(params);
@@ -79,9 +82,7 @@ export class Home extends AbstractView {
 
     async mounted() {
         const products = (await loadProducts()) as unknown as IProducts;
-
         let params = new URL(window.location.href).searchParams;
-
         let searchParam = params.has('search') ? params.get('search') : '';
         (document.querySelector('.product-search') as HTMLInputElement).value = searchParam as string;
 
@@ -90,5 +91,16 @@ export class Home extends AbstractView {
 
         search(products, searchParam!, sortParam!);
         this.bindListeners();
+
+        document.addEventListener('click', (e) =>{
+            const productId = getProductId(e);
+            const currentProduct = products[productId]
+            if(typeof productId === 'number'){
+                shopCart.add(currentProduct);
+            }
+            shopCart.show();
+            cartCounter!.textContent = `${shopCart.length()}`;
+        })
     }
 }
+
