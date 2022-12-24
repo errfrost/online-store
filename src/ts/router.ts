@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { Router, RouterMatch } from './types/interface';
 import { Home } from './view/Home';
+import { CartPage } from './view/CartPage';
 import { Page404 } from './view/Page404';
 
 function pathToRegex(path: string) {
@@ -19,6 +20,7 @@ async function router() {
     const routes: Router[] = [
         { path: '/', view: Home },
         { path: '/404', view: Page404 },
+        { path: '/cart', view: CartPage },
         { path: '/product/:type', view: Home },
       ];
 
