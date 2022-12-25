@@ -16,9 +16,9 @@
         }
     },
     "lint-staged": {
-        "*.(js|jsx)": [
+        "*.(ts|scss)": [
             "npm run lint-fix",
-            "format",
+            "npm run format",
             "git add"
         ]
     },

@@ -44,7 +44,7 @@ export class CartPage extends AbstractView {
                         </span>
                     <div>
 
-                    <div class="cart-item__count>
+                                                    <div class="cart-item__count>
                         <span class="cart-item__stock">
                             Stock: <b class="stock=count">94</b>
                             <button class="button button_plus"><</button>
@@ -71,7 +71,5 @@ export class CartPage extends AbstractView {
       </section>
     `;
     }
-    async mounted() {
-       
-    }
+    async mounted() {}
 }
