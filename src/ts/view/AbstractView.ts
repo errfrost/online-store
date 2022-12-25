@@ -5,7 +5,7 @@ export class AbstractView {
     mounted() {
         throw new Error('Method not implemented.');
     }
-    
+
     constructor(params: QueryStringParams) {
         if (params) {
             this.params = params;

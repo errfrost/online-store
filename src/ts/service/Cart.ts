@@ -6,33 +6,32 @@ export class Cart {
     constructor() {
         this.cartList = [];
     }
-    add(product:IProductCard){
-        for(let item in this.cartList){
-            if(this.cartList[item].id === product.id){
+    add(product: IProductCard) {
+        for (let item in this.cartList) {
+            if (this.cartList[item].id === product.id) {
                 this.remove(product);
-                return 
+                return;
             }
         }
         this.cartList.push(product);
-        this.counter++
+        this.counter++;
     }
-    remove(product:IProductCard){
-        for(let item in this.cartList){
-            if(this.cartList[item].id === product.id){
+    remove(product: IProductCard) {
+        for (let item in this.cartList) {
+            if (this.cartList[item].id === product.id) {
                 const index = this.cartList.indexOf(product);
-                this.cartList.splice(index,1);
-                this.counter--
+                this.cartList.splice(index, 1);
+                this.counter--;
             }
-            
         }
     }
-    show(){
+    show() {
         return this.cartList;
     }
-    clear(){
-        this.cartList = []
+    clear() {
+        this.cartList = [];
     }
-    length(){
+    length() {
         return this.counter;
     }
 }

@@ -1,7 +1,9 @@
-html{
-    box-sizing:border-box
+html {
+    box-sizing: border-box;
 }
-*, *:before, *:after {
+*,
+*:before,
+*:after {
     box-sizing: inherit;
 }
 a {
@@ -18,7 +20,7 @@ h1,
 h2,
 h3,
 h4,
-h5{
+h5 {
     margin: 0;
 }
 
@@ -33,4 +35,4 @@ h5{
     clip-path: inset(100%);
     clip: rect(0 0 0 0);
     overflow: hidden;
-  }
+}

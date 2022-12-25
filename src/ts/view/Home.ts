@@ -5,7 +5,7 @@ import { loadProducts, mount } from '../helpers/generate-cards';
 import { getProductId } from '../helpers/addProduct';
 import { IProducts } from '../types/interface';
 import { search } from '../helpers/search';
-import { Cart} from '../service/Cart';
+import { Cart } from '../service/Cart';
 const shopCart = new Cart();
 const cartCounter = document.querySelector('.cart-counter');
 const cartTotal = document.querySelector('.cart-total__price');
@@ -94,15 +94,14 @@ export class Home extends AbstractView {
         search(products, searchParam!, sortParam!);
         this.bindListeners();
 
-        document.addEventListener('click', (e) =>{
+        document.addEventListener('click', (e) => {
             const productId = getProductId(e);
-            const currentProduct = products[productId]
-            if(typeof productId === 'number'){
+            const currentProduct = products[productId];
+            if (typeof productId === 'number') {
                 shopCart.add(currentProduct);
             }
             cartTotal!.textContent = `${cartSum(shopCart.show())}$`;
             cartCounter!.textContent = `${shopCart.length()}`;
-        })
+        });
     }
 }
-
