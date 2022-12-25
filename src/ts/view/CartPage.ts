@@ -9,7 +9,11 @@ export class CartPage extends AbstractView {
 
     async getHtml() {
         return `
-      <h1>Cart</h1>
+      <h1 class="main-title visually-hidden">Cart</h1>
+      Cart is Empty
     `;
+    }
+    async mounted() {
+        
     }
 }

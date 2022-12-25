@@ -8,6 +8,8 @@ import { search } from '../helpers/search';
 import { Cart} from '../service/Cart';
 const shopCart = new Cart();
 const cartCounter = document.querySelector('.cart-counter');
+const cartTotal = document.querySelector('.cart-total__price');
+import { cartSum } from '../helpers/addProduct';
 export class Home extends AbstractView {
     constructor(params: QueryStringParams) {
         super(params);
@@ -98,7 +100,7 @@ export class Home extends AbstractView {
             if(typeof productId === 'number'){
                 shopCart.add(currentProduct);
             }
-            shopCart.show();
+            cartTotal!.textContent = `${cartSum(shopCart.show())}$`;
             cartCounter!.textContent = `${shopCart.length()}`;
         })
     }

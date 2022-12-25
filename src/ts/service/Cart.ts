@@ -27,7 +27,6 @@ export class Cart {
         }
     }
     show(){
-        console.log('Товары в корзине', this.cartList)
         return this.cartList;
     }
     clear(){

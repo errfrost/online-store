@@ -4,7 +4,7 @@
             "id": 0,
             "title": "Товар",
             "description": "Хороший товар",
-            "price": 549,
+            "price": 549.2,
             "discountPercentage": 12.96,
             "rating": 4.69,
             "stock": 94,
