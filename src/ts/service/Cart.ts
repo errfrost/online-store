@@ -2,24 +2,26 @@ import { IProductCard } from '../types/interface';
 
 export class Cart {
     private counter = 0;
-    cartList: IProductCard[];
+    cartList: IProductCard['id'][];
     constructor() {
-        this.cartList = [];
+        const saved = JSON.parse(localStorage.getItem('cart')!) || null;
+        this.cartList = saved || [];
+        this.counter = saved.length || 0;
     }
     add(product: IProductCard) {
         for (let item in this.cartList) {
-            if (this.cartList[item].id === product.id) {
+            if (this.cartList[item] === product.id) {
                 this.remove(product);
                 return;
             }
         }
-        this.cartList.push(product);
+        this.cartList.push(product.id);
         this.counter++;
     }
     remove(product: IProductCard) {
         for (let item in this.cartList) {
-            if (this.cartList[item].id === product.id) {
-                const index = this.cartList.indexOf(product);
+            if (this.cartList[item] === product.id) {
+                const index = this.cartList.indexOf(product.id);
                 this.cartList.splice(index, 1);
                 this.counter--;
             }

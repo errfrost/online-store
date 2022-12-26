@@ -1,6 +1,5 @@
 import { AbstractView } from './AbstractView';
 import { QueryStringParams } from '../types/type';
-import { ProductCard } from '../service/StoreService';
 import { loadProducts, mount } from '../helpers/generate-cards';
 import { getProductId } from '../helpers/addProduct';
 import { IProducts } from '../types/interface';
@@ -94,14 +93,19 @@ export class Home extends AbstractView {
         search(products, searchParam!, sortParam!);
         this.bindListeners();
 
+        cartTotal!.textContent = `${cartSum(products, shopCart.show())}$`; ///Нужно как-то иначе сделать чтобы не дублировалось  думаю кака то функця обновлния днных
+        cartCounter!.textContent = `${shopCart.length()}`;
+
         document.addEventListener('click', (e) => {
             const productId = getProductId(e);
             const currentProduct = products[productId];
             if (typeof productId === 'number') {
                 shopCart.add(currentProduct);
             }
-            cartTotal!.textContent = `${cartSum(shopCart.show())}$`;
+            cartTotal!.textContent = `${cartSum(products, shopCart.show())}$`;
             cartCounter!.textContent = `${shopCart.length()}`;
+            localStorage.setItem('cart', JSON.stringify(shopCart.show()));
+            console.log(localStorage.getItem('cart'));
         });
     }
 }

@@ -2,26 +2,30 @@ import { ProductCard } from '../service/StoreService';
 import { LoaderOption } from '../types/interface';
 
 export function generateCard(card: ProductCard) {
+    const cartList = JSON.parse(localStorage.getItem('cart')!);
+    const inCart = cartList.indexOf(card.product.id) !== -1;
     return `
-        <h3 class="product-card__title"">${card.product.title}</h3>
-        <div class="product-card__thumbnail">
-            <img src ="${card.product.thumbnail}" width="245" height="245">
-        </div>
-        <div class="product-card__body">
-            <span class="product-card__price">${card.product.price}$</span>
-            <span class="product-card__category">${card.product.category}</span>
-            <span class="product-card__brand">${card.product.brand}</span>
-            <span class="product-card__rating">Rating: <b>${card.product.rating}</b></span>
-            <button class="product-card__button" data-productId="${card.product.id}">Add</button>
-        </div>
+        <li class="product-card ${inCart ? 'in-cart' : ''}">
+            <h3 class="product-card__title"">${card.product.title}</h3>
+            <div class="product-card__thumbnail">
+                <img src ="${card.product.thumbnail}" width="245" height="245">
+            </div>
+            <div class="product-card__body">
+                <span class="product-card__price">${card.product.price}$</span>
+                <span class="product-card__category">${card.product.category}</span>
+                <span class="product-card__brand">${card.product.brand}</span>
+                <span class="product-card__rating">Rating: <b>${card.product.rating}</b></span>
+                <button class="product-card__button" data-productId="${card.product.id}">
+                    ${inCart ? 'Remove' : 'Add'}
+                </button>
+            </div>
+        </li>
         `;
 }
 
 export function mount(parent: Element, card: ProductCard): void {
-    const element: HTMLLIElement = document.createElement('li');
-    element.classList.add('product-card');
-    element.innerHTML = generateCard(card);
-    parent.append(element);
+    const CardHtml = generateCard(card);
+    parent.insertAdjacentHTML('beforeend', CardHtml);
 }
 
 export async function loadProducts() {

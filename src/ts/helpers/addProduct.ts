@@ -1,4 +1,4 @@
-import { IProductCard } from '../types/interface';
+import { IProductCard, IProducts } from '../types/interface';
 export function getProductId(event: Event): number | string {
     const target = event.target;
     if (target instanceof HTMLElement && target.hasAttribute('data-productid')) {
@@ -18,7 +18,11 @@ function addClassToCard(button: HTMLElement) {
     card.classList.toggle('in-cart');
 }
 
-export function cartSum(cartlist: IProductCard[]) {
-    const total = cartlist.reduce((acc, item) => (acc += item.price), 0);
+export function cartSum(productList: IProducts, cartList: IProductCard['id'][]) {
+    const products: IProductCard[] = [];
+    for (let key in cartList) {
+        products.push(productList[cartList[key]]);
+    }
+    const total = products.reduce((acc, item) => (acc += item.price), 0);
     return total;
 }
