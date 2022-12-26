@@ -4,6 +4,7 @@ import { ProductCard } from '../service/StoreService';
 import { loadProducts, mount } from '../helpers/generate-cards';
 import { IProducts } from '../types/interface';
 import { search } from '../helpers/search';
+import { generateFilter } from '../helpers/filters';
 
 export class Home extends AbstractView {
     constructor(params: QueryStringParams) {
@@ -15,7 +16,18 @@ export class Home extends AbstractView {
         return `
       <h1 class="main-title visually-hidden">Home</h1>
         <section class="products-wrapper">
-            <aside class="sidebar"></aside>
+            <aside class="sidebar">
+                <div class="filter-utilities">
+                    <button class="filter-button filter-reset">Reset Filters</button>
+                    <button class="filter-button filter-copy">Copy Link</button>
+                </div>
+                <div class="filter-category">
+                    <h3 class="filter-title">Category</h3>
+                </div>
+                <div class="filter-brand">
+                    <h3 class="filter-title">Brand</h3>
+                </div>
+            </aside>
             <div class="products">
                 <div class="products-utilities">
                     <div class="products-count">100 Results</div>
@@ -88,6 +100,8 @@ export class Home extends AbstractView {
         let sortParam = params.has('sort') ? params.get('sort') : '';
         (document.querySelector('.product-sort') as HTMLSelectElement).value = sortParam as string;
 
+        generateFilter(products, 'category');
+        generateFilter(products, 'brand');
         search(products, searchParam!, sortParam!);
         this.bindListeners();
     }
