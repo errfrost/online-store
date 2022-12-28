@@ -1842,9 +1842,27 @@
                 "https://i.dummyjson.com/data/products/100/3.jpg",
                 "https://i.dummyjson.com/data/products/100/thumbnail.jpg"
             ]
+        },
+        {
+            "id": 101,
+            "title": "Тестовый",
+            "description": "Crystal chandelier maria theresa for 12 light",
+            "price": 47,
+            "discountPercentage": 16,
+            "rating": 4.74,
+            "stock": 133,
+            "brand": "YIOSI",
+            "category": "lighting",
+            "thumbnail": "https://i.dummyjson.com/data/products/100/thumbnail.jpg",
+            "images": [
+                "https://i.dummyjson.com/data/products/100/1.jpg",
+                "https://i.dummyjson.com/data/products/100/2.jpg",
+                "https://i.dummyjson.com/data/products/100/3.jpg",
+                "https://i.dummyjson.com/data/products/100/thumbnail.jpg"
+            ]
         }
     ],
-    "total": 100,
+    "total": 102,
     "skip": 0,
-    "limit": 100
+    "limit": 102
 }
