@@ -1,19 +1,23 @@
 html {
     box-sizing: border-box;
 }
+
 *,
 *:before,
 *:after {
     box-sizing: inherit;
 }
+
 a {
     text-decoration: none;
 }
+
 p,
-ul {
+ul,
+ol{
     margin: 0;
-    padding: 0;
     list-style: none;
+    padding: 0;
 }
 
 h1,
@@ -35,4 +39,11 @@ h5 {
     clip-path: inset(100%);
     clip: rect(0 0 0 0);
     overflow: hidden;
+}
+
+input,
+input:hover,
+input:focus{
+    border: none;
+    outline:none;
 }
