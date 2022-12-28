@@ -4,9 +4,13 @@ import { LoaderOption } from '../types/interface';
 export function generateCard(card: ProductCard) {
     const cartList = JSON.parse(localStorage.getItem('cart')!);
     const inCart = cartList.indexOf(card.product.id) !== -1;
+    let title = card.product.title;
+    if(title.length > 20){
+        title = title.slice(0, 17) + '...';
+    }
     return `
         <li class="product-card ${inCart ? 'in-cart' : ''}">
-            <h3 class="product-card__title"">${card.product.title}</h3>
+            <h3 class="product-card__title"">${title}</h3>
             <div class="product-card__thumbnail">
                 <img src ="${card.product.thumbnail}" width="245" height="245">
             </div>

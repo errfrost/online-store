@@ -4,7 +4,7 @@ import { Cart } from '../service/Cart';
 import { generateCard, loadProducts } from '../helpers/generate-cards';
 import { IProducts } from '../types/interface';
 import { cartSum } from '../helpers/addProduct';
-import { generateCartItem } from '../helpers/generateCartIem';
+import { generateCartItem } from '../helpers/generateCartItem';
 
 export class CartPage extends AbstractView {
     constructor(params: QueryStringParams) {
