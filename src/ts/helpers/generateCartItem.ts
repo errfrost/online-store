@@ -33,7 +33,7 @@ export function generateCartItem(product: IProductCard) {
                 <b class="cart__paginator-item">${productCount}</b>
                 <button class="button button_minus">-</button>
             </div>
-            <span class="cart-item__total">${product.price * productCount }$</span>
+            <span class="cart-item__total">${product.price * productCount}$</span>
         </div>
     </li>
     `;

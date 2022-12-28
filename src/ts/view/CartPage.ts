@@ -61,10 +61,10 @@ export class CartPage extends AbstractView {
         const shopCart = new Cart();
         cartTotal!.textContent = `${cartSum(products, shopCart.show())}$`; ///Нужно как-то иначе сделать чтобы не дублировалось  думаю кака то функця обновлния днных
         cartCounter!.textContent = `${shopCart.length()}`;
-        
-        for(let key of  shopCart.show()){
-          const item =   generateCartItem(products[key]);
-          cartList!.insertAdjacentHTML('beforeend',item);
+
+        for (let key of shopCart.show()) {
+            const item = generateCartItem(products[key]);
+            cartList!.insertAdjacentHTML('beforeend', item);
         }
-}
+    }
 }

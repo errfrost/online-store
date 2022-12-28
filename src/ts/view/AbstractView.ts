@@ -2,7 +2,7 @@ import { QueryStringParams } from '../types/type';
 export abstract class AbstractView {
     title: string;
     params: QueryStringParams = {};
-    abstract mounted():void;
+    abstract mounted(): void;
 
     constructor(params: QueryStringParams) {
         if (params) {
@@ -15,7 +15,7 @@ export abstract class AbstractView {
         document.title = this.title + title;
     }
 
-    async  getHtml() {
+    async getHtml() {
         return '';
     }
 }

@@ -5,7 +5,7 @@ export function generateCard(card: ProductCard) {
     const cartList = JSON.parse(localStorage.getItem('cart')!);
     const inCart = cartList.indexOf(card.product.id) !== -1;
     let title = card.product.title;
-    if(title.length > 20){
+    if (title.length > 20) {
         title = title.slice(0, 17) + '...';
     }
     return `

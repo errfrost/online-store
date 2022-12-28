@@ -11,7 +11,7 @@
     font-weight: bold;
 }
 
-.cart-section{
+.cart-section {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
@@ -20,12 +20,12 @@
     text-align: center;
     margin: 50px 0;
 }
-.cart{
+.cart {
     border-radius: 5px;
     flex-basis: 68%;
     background-color: $dark_gray;
     margin-right: 6px;
-    &__topbar{
+    &__topbar {
         background-color: $green;
         color: #fff;
         padding: 10px 20px;
@@ -35,128 +35,126 @@
         align-items: center;
         border-radius: 5px 5px 0 0;
     }
-    &__items{
+    &__items {
         display: flex;
         align-items: center;
         margin-left: auto;
-        &-counter{
+        &-counter {
             @extend %buton_style;
             margin-left: 20px;
             margin-right: 36px;
         }
     }
-    .button{
+    .button {
         width: 36px;
         @extend %buton_style;
         height: 36px;
-        &_prev{
+        &_prev {
             margin-left: 15px;
         }
     }
-    
-    &__paginator{
+
+    &__paginator {
         display: flex;
         align-items: center;
-        &-page{
+        &-page {
             @extend %buton_style;
             margin: 0 5px;
         }
     }
 
-    &__list{
+    &__list {
         padding: 20px;
     }
 }
 
-.cart-item{
+.cart-item {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 20px;
     padding-bottom: 20px;
     border-bottom: 2px solid $green;
-    &__total{
+    &__total {
         color: $red;
     }
-    &__stock{
+    &__stock {
         text-align: center;
         font-weight: bold;
         flex-grow: 1;
         font-size: 18px;
-        .stock-count{
+        .stock-count {
             color: $red;
-            
         }
-        .stock-buttons-wrapper{
+        .stock-buttons-wrapper {
             display: flex;
             justify-content: center;
             margin: 10px 0;
             .button,
-            .cart__paginator-item{
+            .cart__paginator-item {
                 @extend %buton_style;
                 background-color: $green;
                 color: #fff;
                 margin: 0 2.5px;
-            } 
+            }
         }
     }
-    &__number{
+    &__number {
         @extend %buton_style;
         background-color: $green;
         color: #fff;
         margin-right: 38px;
     }
-    &__img{
+    &__img {
         margin-right: 12px;
         border-radius: 5px;
         border: 2px solid $green;
         background-color: #fff;
         object-fit: cover;
     }
-    &__info{
+    &__info {
         flex-basis: 424px;
         text-align: center;
-        &-title{
+        &-title {
             display: block;
             font-size: 18px;
             margin-bottom: 27px;
             font-weight: bold;
         }
-        &-descr{
+        &-descr {
             margin-bottom: 40px;
         }
-        &-line{
+        &-line {
             border-color: $green;
             border-style: double;
         }
-        &-button{
+        &-button {
             background-color: #fff;
             padding: 5px 16px;
             border-radius: 5px;
             .rating-count,
-            .discount-count{
+            .discount-count {
                 font-weight: 400;
                 color: $green;
-            }   
+            }
         }
-        &-btn-wrapper{
+        &-btn-wrapper {
             display: flex;
             justify-content: space-between;
         }
-    } 
-    
+    }
 }
 
-.summary{
+.summary {
     flex-grow: 1;
     background-color: $dark_gray;
     border-radius: 5px;
-    &__topbar{
+    &__topbar {
         background-color: $green;
         color: #fff;
-        border-radius: 5px 5px 0 0 ;
+        border-radius: 5px 5px 0 0;
     }
-    &__title{
+    &__title {
         display: flex;
         justify-content: center;
         align-items: center;
@@ -167,30 +165,30 @@
         height: 56px;
         margin-bottom: 25px;
     }
-    &__products{
+    &__products {
         font-weight: bold;
         font-size: 18px;
         display: flex;
         flex-direction: column;
         align-items: center;
-        &-title{
+        &-title {
             margin-bottom: 15px;
         }
         &-counter,
-        &-price{
+        &-price {
             color: $red;
         }
-        &-promocode{
+        &-promocode {
             border: none;
-            border-radius:  5px;
+            border-radius: 5px;
             padding: 5px 0;
             text-align: center;
             margin-bottom: 15px;
         }
-        &-promocode:placeholder{
+        &-promocode:placeholder {
             color: #000;
         }
-        .buy-btn{
+        .buy-btn {
             border: none;
             border-radius: 5px;
             text-transform: uppercase;
@@ -202,4 +200,3 @@
         }
     }
 }
-
