@@ -1,3 +1,4 @@
+import { ProductCard } from '../service/StoreService';
 import { IProducts, IProductCard } from '../types/interface';
 
 function getFilterFieldArray(products: IProducts, filterField: string) {
@@ -18,20 +19,20 @@ function getProductsCount(products: IProducts, filterField: string, filterFieldV
     return counter;
 }
 
-function generateFilterLine(filterFieldValue: string, productsCount: number) {
+function generateFilterLine(filterFieldValue: string, productsCount: number, filterField: string) {
     return `
         <div class="checkbox-line">
-            <input type="checkbox" id="${filterFieldValue}" class="filter-check">
+            <input type="checkbox" id="${filterFieldValue}" class="filter-check" data-filterfield="${filterField}">
             <label for="${filterFieldValue}" class="filter-check-label">${filterFieldValue}</label>
         </div>
         <div class="checkbox-counter">(0/${productsCount})</div>
     `;
 }
 
-function mount(parent: Element, filterFieldValue: string, productsCount: number) {
+function mount(parent: Element, filterFieldValue: string, productsCount: number, filterField: string) {
     const element: HTMLElement = document.createElement('div');
     element.classList.add('filter-checkbox-line');
-    element.innerHTML = generateFilterLine(filterFieldValue, productsCount);
+    element.innerHTML = generateFilterLine(filterFieldValue, productsCount, filterField);
     parent.append(element);
 }
 
@@ -40,6 +41,20 @@ export function generateFilter(products: IProducts, filterField: string) {
     let filterFieldValues: string[] = getFilterFieldArray(products, filterField);
     for (let i in filterFieldValues) {
         const productsCount = getProductsCount(products, filterField, filterFieldValues[i]);
-        mount(page!, filterFieldValues[i], productsCount);
+        mount(page!, filterFieldValues[i], productsCount, filterField);
     }
+}
+
+export function filter(productCards: ProductCard[]): ProductCard[] {
+    let filters = Array.from(document.querySelectorAll('input[type=checkbox]')) as Array<HTMLInputElement>;
+    filters = filters.filter((i) => i.checked);
+    const filterCategory = filters.filter((i) => i.getAttribute('data-filterfield') === 'category');
+    const filterBrand = filters.filter((i) => i.getAttribute('data-filterfield') === 'brand');
+    const filterCategoryStrings = filterCategory.map((i) => i.getAttribute('id'));
+    const filterBrandStrings = filterBrand.map((i) => i.getAttribute('id'));
+
+    if (filterCategoryStrings.length > 0) productCards = productCards.filter((i) => filterCategoryStrings.includes(i.product.category));
+    if (filterBrandStrings.length > 0) productCards = productCards.filter((i) => filterBrandStrings.includes(i.product.brand));
+
+    return productCards;
 }

@@ -4,7 +4,7 @@ import { ProductCard } from '../service/StoreService';
 import { loadProducts, mount } from '../helpers/generate-cards';
 import { IProducts } from '../types/interface';
 import { search } from '../helpers/search';
-import { generateFilter } from '../helpers/filters';
+import { generateFilter, filter } from '../helpers/filters';
 
 export class Home extends AbstractView {
     constructor(params: QueryStringParams) {
@@ -66,11 +66,38 @@ export class Home extends AbstractView {
         }
     }
 
+    convertToProductCard(products: IProducts): ProductCard[] {
+        let productCards: ProductCard[] = [];
+        for (let item in products) {
+            const card = new ProductCard(products[item]);
+            productCards.push(card);
+        }
+        return productCards;
+    }
+
+    drawProductCards(productCards: ProductCard[]) {
+        const page = document.querySelector('.products-list');
+        const results = document.querySelector('.products-count');
+        page!.textContent = '';
+        let resultsCount: number = 0;
+
+        for (let item in productCards) {
+            const card = productCards[item];
+            mount(page!, card);
+            resultsCount++;
+        }
+
+        results!.textContent = `${resultsCount} Results`;
+    }
+
     async prepareSearch() {
         let filterSearch: string = (document.querySelector('.product-search') as HTMLInputElement).value.toLowerCase();
         let filterSort: string = (document.querySelector('.product-sort') as HTMLSelectElement).value;
         const products = (await loadProducts()) as unknown as IProducts;
-        search(products, filterSearch, filterSort);
+        let productCards = this.convertToProductCard(products);
+        productCards = filter(productCards);
+        productCards = search(productCards, filterSearch, filterSort);
+        this.drawProductCards(productCards);
 
         let url: string = window.location.href;
         if (filterSearch !== '') url = this.updateQueryStringParameter(url, 'search', filterSearch);
@@ -79,30 +106,34 @@ export class Home extends AbstractView {
     }
 
     async bindListeners() {
-        document.querySelector('.product-search')?.addEventListener('keypress', async (e) => {
-            if ((e as KeyboardEvent).key === 'Enter') {
-                await this.prepareSearch();
-            }
+        document.querySelector('.product-search')?.addEventListener('search', async (e) => {
+            await this.prepareSearch();
         });
         document.querySelector('.product-sort')?.addEventListener('change', async (e) => {
             await this.prepareSearch();
         });
+
+        const filters = Array.from(document.querySelectorAll('input[type=checkbox]')) as Array<HTMLInputElement>;
+        filters.forEach((f: Element) => {
+            f.addEventListener('change', async (e) => {
+                await this.prepareSearch();
+            });
+        });
     }
 
     async mounted() {
-        const products = (await loadProducts()) as unknown as IProducts;
-
         let params = new URL(window.location.href).searchParams;
-
         let searchParam = params.has('search') ? params.get('search') : '';
         (document.querySelector('.product-search') as HTMLInputElement).value = searchParam as string;
-
         let sortParam = params.has('sort') ? params.get('sort') : '';
         (document.querySelector('.product-sort') as HTMLSelectElement).value = sortParam as string;
 
+        const products = (await loadProducts()) as unknown as IProducts;
+        let productCards = this.convertToProductCard(products);
         generateFilter(products, 'category');
         generateFilter(products, 'brand');
-        search(products, searchParam!, sortParam!);
+        productCards = search(productCards, searchParam!, sortParam!);
+        this.drawProductCards(productCards);
         this.bindListeners();
     }
 }
