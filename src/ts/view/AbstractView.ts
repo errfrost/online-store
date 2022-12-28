@@ -1,10 +1,8 @@
 import { QueryStringParams } from '../types/type';
-export class AbstractView {
+export abstract class AbstractView {
     title: string;
     params: QueryStringParams = {};
-    mounted() {
-        throw new Error('Method not implemented.');
-    }
+    abstract mounted():void;
 
     constructor(params: QueryStringParams) {
         if (params) {
@@ -17,7 +15,7 @@ export class AbstractView {
         document.title = this.title + title;
     }
 
-    async getHtml() {
+    async  getHtml() {
         return '';
     }
 }
