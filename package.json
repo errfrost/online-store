@@ -1,14 +1,16 @@
 {
     "version": "0.1.0",
     "description": "online-store",
-    "private": true,
+    "private": false,
     "name": "online-store",
     "scripts": {
         "start": "webpack serve --env development",
         "build": "webpack",
         "lint": "eslint **/*.ts",
         "lint-fix": "eslint --fix **/*.ts",
-        "format": "prettier -w ."
+        "format": "prettier -w .",
+        "prepare": "husky install",
+        "postinstall": "husky install"
     },
     "husky": {
         "hooks": {
