@@ -27,6 +27,46 @@ export class Home extends AbstractView {
                 <div class="filter-brand">
                     <h3 class="filter-title">Brand</h3>
                 </div>
+                <div class="filter-price">
+                    <h3 class="filter-title">Price</h3>
+                    <div class="price-range">
+                        <div class="price-input">
+                          <div class="field">
+                            <input type="number" class="input-min" value="2500" readonly>
+                          </div>
+                          <div class="field">
+                            <input type="number" class="input-max" value="7500" readonly>
+                          </div>
+                        </div>
+                        <div class="slider">
+                          <div class="progress"></div>
+                        </div>
+                        <div class="range-input">
+                          <input type="range" class="range-min" min="0" max="10000" value="2500" step="1">
+                          <input type="range" class="range-max" min="0" max="10000" value="7500" step="1">
+                        </div>
+                  </div>                    
+                </div>
+                <div class="filter-stock">
+                    <h3 class="filter-title">In Stock</h3>
+                    <div class="stock-range">
+                        <div class="price-input">
+                          <div class="field">
+                            <input type="number" class="input-min" value="2500" readonly>
+                          </div>
+                          <div class="field">
+                            <input type="number" class="input-max" value="7500" readonly>
+                          </div>
+                        </div>
+                        <div class="slider">
+                          <div class="progress"></div>
+                        </div>
+                        <div class="range-input">
+                          <input type="range" class="range-min" min="0" max="10000" value="2500" step="1">
+                          <input type="range" class="range-max" min="0" max="10000" value="7500" step="1">
+                        </div>
+                  </div>                    
+                </div>
             </aside>
             <div class="products">
                 <div class="products-utilities">
@@ -46,8 +86,7 @@ export class Home extends AbstractView {
                             <span>Search:</span>
                             <input type="search" class="product-search">
                         </div>
-
-                        </div>
+                    </div>
                 </div>
                 <ul class="products-list">
                 </ul>
@@ -105,6 +144,32 @@ export class Home extends AbstractView {
         window.history.pushState({ path: url }, '', url);
     }
 
+    sliderListener(slider: string) {
+        const rangeInput = document.querySelectorAll(`${slider} .range-input input`) as unknown as HTMLInputElement[];
+        const priceInput = document.querySelectorAll(`${slider} .price-input input`) as unknown as HTMLInputElement[];
+        const range = document.querySelector(`${slider} .slider .progress`) as HTMLDivElement;
+        rangeInput.forEach((input) => {
+            input.addEventListener('input', (e) => {
+                let priceGap = 10;
+                let minVal = parseInt(rangeInput[0].value);
+                let maxVal = parseInt(rangeInput[1].value);
+
+                if (maxVal - minVal < priceGap) {
+                    if ((<HTMLInputElement>e.target)!.className === 'range-min') {
+                        rangeInput[0].value = (maxVal - priceGap).toString();
+                    } else {
+                        rangeInput[1].value = (minVal + priceGap).toString();
+                    }
+                } else {
+                    priceInput[0].value = minVal.toString();
+                    priceInput[1].value = maxVal.toString();
+                    range!.style.left = (minVal / Number(rangeInput[0].max)) * 100 + '%';
+                    range!.style.right = 100 - (maxVal / Number(rangeInput[1].max)) * 100 + '%';
+                }
+            });
+        });
+    }
+
     async bindListeners() {
         document.querySelector('.product-search')?.addEventListener('search', async (e) => {
             await this.prepareSearch();
@@ -119,6 +184,9 @@ export class Home extends AbstractView {
                 await this.prepareSearch();
             });
         });
+
+        this.sliderListener('.price-range');
+        this.sliderListener('.stock-range');
     }
 
     async mounted() {
