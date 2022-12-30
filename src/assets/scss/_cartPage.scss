@@ -92,6 +92,8 @@
             margin: 10px 0;
             .button,
             .cart__paginator-item {
+                cursor: pointer;
+                caret-color: transparent;
                 @extend %buton_style;
                 background-color: $green;
                 color: #fff;

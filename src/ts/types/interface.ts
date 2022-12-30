@@ -36,3 +36,8 @@ export interface IProducts {
 export interface LoaderOption {
     [key: string]: IProductCard[];
 }
+
+export interface IcartItem {
+    id: number;
+    count: number;
+}

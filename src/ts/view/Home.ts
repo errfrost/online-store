@@ -97,15 +97,23 @@ export class Home extends AbstractView {
         cartCounter!.textContent = `${shopCart.length()}`;
 
         document.addEventListener('click', (e) => {
+            const target = e.target instanceof Element ? e.target : null;
             const productId = getProductId(e);
             const currentProduct = products[productId];
             if (typeof productId === 'number') {
-                shopCart.add(currentProduct);
+                if(!target?.classList.contains('remove')){
+                    shopCart.remove(currentProduct, true);
+                    
+                }else{
+                    shopCart.add(currentProduct);
+                }
+                
+                
             }
+            console.log(shopCart.show());
             cartTotal!.textContent = `${cartSum(products, shopCart.show())}$`;
             cartCounter!.textContent = `${shopCart.length()}`;
             localStorage.setItem('cart', JSON.stringify(shopCart.show()));
-            console.log(localStorage.getItem('cart'));
         });
     }
 }

@@ -3,7 +3,12 @@ import { LoaderOption } from '../types/interface';
 
 export function generateCard(card: ProductCard) {
     const cartList = JSON.parse(localStorage.getItem('cart')!);
-    const inCart = cartList.indexOf(card.product.id) !== -1;
+    let inCart = false;
+    for (let item in cartList) {
+        if(cartList[item].id === card.product.id){
+           inCart = true
+        }
+    }
     let title = card.product.title;
     if (title.length > 20) {
         title = title.slice(0, 17) + '...';

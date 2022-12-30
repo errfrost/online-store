@@ -58,13 +58,48 @@ export class CartPage extends AbstractView {
         const cartCounter = document.querySelector('.cart-counter');
         const cartTotal = document.querySelector('.cart-total__price');
         const cartList = document.querySelector('.cart__list');
+        const summaryCounter = document.querySelector('.summary__products-counter');
+        const summaryPrice = document.querySelector('.summary__products-price');
         const shopCart = new Cart();
-        cartTotal!.textContent = `${cartSum(products, shopCart.show())}$`; ///Нужно как-то иначе сделать чтобы не дублировалось  думаю кака то функця обновлния днных
+        cartTotal!.textContent = `${cartSum(products, shopCart.show())}$`;
+        summaryPrice!.textContent = `${cartSum(products, shopCart.show())}$`;
+        ///Нужно как-то иначе сделать чтобы не дублировалось  думаю кака то функця обновлния днных
         cartCounter!.textContent = `${shopCart.length()}`;
-
+        summaryCounter!.textContent = `${shopCart.length()}`;
+        console.log(shopCart.show());
         for (let key of shopCart.show()) {
-            const item = generateCartItem(products[key]);
+            const item = generateCartItem(products[key.id], key.count);
             cartList!.insertAdjacentHTML('beforeend', item);
         }
+
+        document.addEventListener('click', (event) => {
+            const target = event.target;
+            if (target instanceof Element && target.classList.contains('button')) {
+                if (target.parentElement?.classList.contains('stock-buttons-wrapper')) {
+                    const cartItem = target.closest('.cart-item');
+                    const cartItemId = Number(cartItem?.getAttribute('data-productid'));
+                    const counter = target.parentElement.querySelector('.cart__paginator-item')!;
+                    if (target.classList.contains('button_plus')) {
+                        shopCart.add(products[cartItemId]);
+                        counter.textContent = (Number(counter.textContent!) + 1).toString();
+                    } else if (target.classList.contains('button_minus')) {
+                        counter.textContent = (Number(counter.textContent!) - 1).toString();
+                        shopCart.remove(products[cartItemId]);
+                    }
+                }
+            }
+
+            cartList!.innerHTML = '';
+            for (let key of shopCart.show()) {
+                const item = generateCartItem(products[key.id], key.count);
+                cartList!.insertAdjacentHTML('beforeend', item);
+            }
+            cartTotal!.textContent = `${cartSum(products, shopCart.show())}$`;
+            ///Нужно как-то иначе сделать чтобы не дублировалось  думаю кака то функця обновлния днных
+            cartCounter!.textContent = `${shopCart.length()}`;
+            summaryCounter!.textContent = `${shopCart.length()}`;
+            summaryPrice!.textContent = `${cartSum(products, shopCart.show())}$`;
+            localStorage.setItem('cart', JSON.stringify(shopCart.show()));
+        });
     }
 }

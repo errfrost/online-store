@@ -1,8 +1,8 @@
 import { IProductCard } from '../types/interface';
-export function generateCartItem(product: IProductCard) {
-    let productCount = 1;
+export function generateCartItem(product: IProductCard, count:number) {
+    let productCount = count;
     return `
-    <li class="cart-item">
+    <li class="cart-item" data-productId = "${product.id}">
         <span class="cart-item__number">1</span>
         <img width="200" src="${product.thumbnail}" alt="${product.title}" height="120" class="cart-item__img">
         <div class="cart-item__info">
