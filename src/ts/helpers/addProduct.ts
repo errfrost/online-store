@@ -12,10 +12,10 @@ function addClassToCard(button: HTMLElement) {
     const card = button.closest('.product-card')!;
     if (!card.classList.contains('in-cart')) {
         button.textContent = 'Remove';
-        button.classList.add('remove')
+        button.classList.add('remove');
     } else {
         button.textContent = 'Add';
-        button.classList.remove('remove')
+        button.classList.remove('remove');
     }
     card.classList.toggle('in-cart');
 }
@@ -25,6 +25,5 @@ export function cartSum(productList: IProducts, cartList: IcartItem[]) {
     for (let key of cartList) {
         total += productList[key.id].price * key.count;
     }
-    console.log(total);
-    return total;
+    return total.toFixed(2);
 }

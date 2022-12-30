@@ -1,5 +1,5 @@
 import { IProductCard } from '../types/interface';
-export function generateCartItem(product: IProductCard, count:number) {
+export function generateCartItem(product: IProductCard, count: number) {
     let productCount = count;
     return `
     <li class="cart-item" data-productId = "${product.id}">
@@ -33,7 +33,7 @@ export function generateCartItem(product: IProductCard, count:number) {
                 <b class="cart__paginator-item">${productCount}</b>
                 <button class="button button_minus">-</button>
             </div>
-            <span class="cart-item__total">${product.price * productCount}$</span>
+            <span class="cart-item__total">${(product.price * productCount).toFixed(2)}$</span>
         </div>
     </li>
     `;

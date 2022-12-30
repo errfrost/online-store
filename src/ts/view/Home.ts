@@ -101,14 +101,11 @@ export class Home extends AbstractView {
             const productId = getProductId(e);
             const currentProduct = products[productId];
             if (typeof productId === 'number') {
-                if(!target?.classList.contains('remove')){
+                if (!target?.classList.contains('remove')) {
                     shopCart.remove(currentProduct, true);
-                    
-                }else{
+                } else {
                     shopCart.add(currentProduct);
                 }
-                
-                
             }
             console.log(shopCart.show());
             cartTotal!.textContent = `${cartSum(products, shopCart.show())}$`;

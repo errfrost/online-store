@@ -5,8 +5,8 @@ export function generateCard(card: ProductCard) {
     const cartList = JSON.parse(localStorage.getItem('cart')!);
     let inCart = false;
     for (let item in cartList) {
-        if(cartList[item].id === card.product.id){
-           inCart = true
+        if (cartList[item].id === card.product.id) {
+            inCart = true;
         }
     }
     let title = card.product.title;

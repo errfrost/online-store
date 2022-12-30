@@ -17,20 +17,18 @@ export class Cart {
         }
         this.cartList.push({
             id: product.id,
-            count: 1
+            count: 1,
         });
         this.counter++;
     }
-    remove(product: IProductCard, hard:boolean = false) {
+    remove(product: IProductCard, hard: boolean = false) {
         for (let item of this.cartList) {
             if (item.id === product.id) {
-                item.count-=1
-                if(item.count < 1 || hard){
-                const index = this.cartList.indexOf(item);
-                this.cartList.splice(index, 1);
-                
+                item.count -= 1;
+                if (item.count < 1 || hard) {
+                    const index = this.cartList.indexOf(item);
+                    this.cartList.splice(index, 1);
                 }
-                
             }
             this.counter--;
         }
@@ -42,7 +40,6 @@ export class Cart {
         this.cartList = [];
     }
     length() {
-        return this.cartList.reduce((acc, item) => acc + item.count ,0);
-        
+        return this.cartList.reduce((acc, item) => acc + item.count, 0);
     }
 }
