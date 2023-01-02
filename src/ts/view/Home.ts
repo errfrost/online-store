@@ -32,18 +32,18 @@ export class Home extends AbstractView {
                     <div class="price-range">
                         <div class="price-input">
                           <div class="field">
-                            <input type="number" class="input-min" value="2500" readonly>
+                            <input type="number" class="input-min" value="0" readonly>
                           </div>
                           <div class="field">
-                            <input type="number" class="input-max" value="7500" readonly>
+                            <input type="number" class="input-max" value="2000" readonly>
                           </div>
                         </div>
                         <div class="slider">
                           <div class="progress"></div>
                         </div>
                         <div class="range-input">
-                          <input type="range" class="range-min" min="0" max="10000" value="2500" step="1">
-                          <input type="range" class="range-max" min="0" max="10000" value="7500" step="1">
+                          <input type="range" class="range-min" min="0" max="2000" value="0" step="1">
+                          <input type="range" class="range-max" min="0" max="2000" value="2000" step="1">
                         </div>
                   </div>                    
                 </div>
@@ -52,18 +52,18 @@ export class Home extends AbstractView {
                     <div class="stock-range">
                         <div class="price-input">
                           <div class="field">
-                            <input type="number" class="input-min" value="2500" readonly>
+                            <input type="number" class="input-min" value="0" readonly>
                           </div>
                           <div class="field">
-                            <input type="number" class="input-max" value="7500" readonly>
+                            <input type="number" class="input-max" value="100" readonly>
                           </div>
                         </div>
                         <div class="slider">
                           <div class="progress"></div>
                         </div>
                         <div class="range-input">
-                          <input type="range" class="range-min" min="0" max="10000" value="2500" step="1">
-                          <input type="range" class="range-max" min="0" max="10000" value="7500" step="1">
+                          <input type="range" class="range-min" min="0" max="100" value="0" step="1">
+                          <input type="range" class="range-max" min="0" max="100" value="100" step="1">
                         </div>
                   </div>                    
                 </div>
@@ -145,11 +145,12 @@ export class Home extends AbstractView {
     }
 
     sliderListener(slider: string) {
-        const rangeInput = document.querySelectorAll(`${slider} .range-input input`) as unknown as HTMLInputElement[];
-        const priceInput = document.querySelectorAll(`${slider} .price-input input`) as unknown as HTMLInputElement[];
-        const range = document.querySelector(`${slider} .slider .progress`) as HTMLDivElement;
+        const sliderClass = `.${slider}-range`;
+        const rangeInput = document.querySelectorAll(`${sliderClass} .range-input input`) as unknown as HTMLInputElement[];
+        const priceInput = document.querySelectorAll(`${sliderClass} .price-input input`) as unknown as HTMLInputElement[];
+        const range = document.querySelector(`${sliderClass} .slider .progress`) as HTMLDivElement;
         rangeInput.forEach((input) => {
-            input.addEventListener('input', (e) => {
+            input.addEventListener('input', async (e) => {
                 let priceGap = 10;
                 let minVal = parseInt(rangeInput[0].value);
                 let maxVal = parseInt(rangeInput[1].value);
@@ -166,7 +167,8 @@ export class Home extends AbstractView {
                     range!.style.left = (minVal / Number(rangeInput[0].max)) * 100 + '%';
                     range!.style.right = 100 - (maxVal / Number(rangeInput[1].max)) * 100 + '%';
                 }
-            });
+                await this.prepareSearch();
+              });
         });
     }
 
@@ -185,8 +187,8 @@ export class Home extends AbstractView {
             });
         });
 
-        this.sliderListener('.price-range');
-        this.sliderListener('.stock-range');
+        this.sliderListener('price');
+        this.sliderListener('stock');
     }
 
     async mounted() {

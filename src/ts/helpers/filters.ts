@@ -52,9 +52,13 @@ export function filter(productCards: ProductCard[]): ProductCard[] {
     const filterBrand = filters.filter((i) => i.getAttribute('data-filterfield') === 'brand');
     const filterCategoryStrings = filterCategory.map((i) => i.getAttribute('id'));
     const filterBrandStrings = filterBrand.map((i) => i.getAttribute('id'));
+    const filterPrice = document.querySelectorAll('.price-range .range-input input') as unknown as HTMLInputElement[];
+    const filterStock = document.querySelectorAll('.stock-range .range-input input') as unknown as HTMLInputElement[];
 
     if (filterCategoryStrings.length > 0) productCards = productCards.filter((i) => filterCategoryStrings.includes(i.product.category));
     if (filterBrandStrings.length > 0) productCards = productCards.filter((i) => filterBrandStrings.includes(i.product.brand));
+    productCards = productCards.filter((i) => (i.product.price > Number(filterPrice[0].value) && i.product.price < Number(filterPrice[1].value)));
+    productCards = productCards.filter((i) => (i.product.stock > Number(filterStock[0].value) && i.product.stock < Number(filterStock[1].value)));
 
     return productCards;
 }
