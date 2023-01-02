@@ -36,18 +36,18 @@ export class Home extends AbstractView {
                     <div class="price-range">
                         <div class="price-input">
                           <div class="field">
-                            <input type="number" class="input-min" value="0" readonly>
+                            <input type="number" class="input-min" value="10" readonly>
                           </div>
                           <div class="field">
-                            <input type="number" class="input-max" value="2000" readonly>
+                            <input type="number" class="input-max" value="1749" readonly>
                           </div>
                         </div>
                         <div class="slider">
                           <div class="progress"></div>
                         </div>
                         <div class="range-input">
-                          <input type="range" class="range-min" min="0" max="2000" value="0" step="1">
-                          <input type="range" class="range-max" min="0" max="2000" value="2000" step="1">
+                          <input type="range" class="range-min" min="10" max="1749" value="10" step="1">
+                          <input type="range" class="range-max" min="10" max="1749" value="1749" step="1">
                         </div>
                   </div>                    
                 </div>
@@ -56,18 +56,18 @@ export class Home extends AbstractView {
                     <div class="stock-range">
                         <div class="price-input">
                           <div class="field">
-                            <input type="number" class="input-min" value="0" readonly>
+                            <input type="number" class="input-min" value="2" readonly>
                           </div>
                           <div class="field">
-                            <input type="number" class="input-max" value="100" readonly>
+                            <input type="number" class="input-max" value="96" readonly>
                           </div>
                         </div>
                         <div class="slider">
                           <div class="progress"></div>
                         </div>
                         <div class="range-input">
-                          <input type="range" class="range-min" min="0" max="100" value="0" step="1">
-                          <input type="range" class="range-max" min="0" max="100" value="100" step="1">
+                          <input type="range" class="range-min" min="2" max="150" value="2" step="1">
+                          <input type="range" class="range-max" min="2" max="150" value="150" step="1">
                         </div>
                   </div>                    
                 </div>
@@ -133,14 +133,14 @@ export class Home extends AbstractView {
         results!.textContent = `${resultsCount} Results`;
     }
 
-    async prepareSearch() {
+    async prepareSearch(caller: string) {
         let filterSearch: string = (document.querySelector('.product-search') as HTMLInputElement).value.toLowerCase();
         let filterSort: string = (document.querySelector('.product-sort') as HTMLSelectElement).value;
         const products = (await loadProducts()) as unknown as IProducts;
         let productCards = this.convertToProductCard(products);
         productCards = filter(productCards);
         productCards = search(productCards, filterSearch, filterSort);
-        recalcFilters(productCards);
+        recalcFilters(productCards, caller);
         this.drawProductCards(productCards);
 
         let url: string = window.location.href;
@@ -172,23 +172,23 @@ export class Home extends AbstractView {
                     range!.style.left = (minVal / Number(rangeInput[0].max)) * 100 + '%';
                     range!.style.right = 100 - (maxVal / Number(rangeInput[1].max)) * 100 + '%';
                 }
-                await this.prepareSearch();
-              });
+                await this.prepareSearch('slider');
+            });
         });
     }
 
     async bindListeners() {
         document.querySelector('.product-search')?.addEventListener('search', async (e) => {
-            await this.prepareSearch();
+            await this.prepareSearch('search');
         });
         document.querySelector('.product-sort')?.addEventListener('change', async (e) => {
-            await this.prepareSearch();
+            await this.prepareSearch('sort');
         });
 
         const filters = Array.from(document.querySelectorAll('input[type=checkbox]')) as Array<HTMLInputElement>;
         filters.forEach((f: Element) => {
             f.addEventListener('change', async (e) => {
-                await this.prepareSearch();
+                await this.prepareSearch('checkbox');
             });
         });
 
@@ -208,7 +208,7 @@ export class Home extends AbstractView {
         generateFilter(productCards, 'category');
         generateFilter(productCards, 'brand');
         productCards = search(productCards, searchParam!, sortParam!);
-        recalcFilters(productCards);
+        recalcFilters(productCards, '');
         this.drawProductCards(productCards);
         this.bindListeners();
     }

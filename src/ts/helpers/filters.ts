@@ -36,17 +36,42 @@ function mount(parent: Element, filterFieldValue: string, productsCount: number,
     parent.append(element);
 }
 
-export function recalcFilters(productCards: ProductCard[]) {
-  const categories = Array.from(document.querySelectorAll('.filter-category-list span')) as Array<HTMLSpanElement>;
-  categories.forEach((f: Element) => {
-      f.innerHTML = String(getProductsCount(productCards, 'category', f.id));
-  });
+function redrawMinMaxRange(productCards: ProductCard[], filterField: string) {
+    let minParam = Infinity;
+    let maxParam = 0;
+    for (let item in productCards) {
+        const cardField = productCards[item].product[filterField as keyof IProductCard];
+        if (cardField < minParam) minParam = Number(cardField);
+        if (cardField > maxParam) maxParam = Number(cardField);
+    }
+    if (minParam <= maxParam) {
+        const rangeInput = document.querySelectorAll(`.${filterField}-range .range-input input`) as unknown as HTMLInputElement[];
+        const priceInput = document.querySelectorAll(`.${filterField}-range .price-input input`) as unknown as HTMLInputElement[];
+        const range = document.querySelector(`.${filterField}-range .slider .progress`) as HTMLDivElement;
+        rangeInput[0].value = minParam.toString();
+        rangeInput[1].value = maxParam.toString();
+        priceInput[0].value = minParam.toString();
+        priceInput[1].value = maxParam.toString();
+        range!.style.left = (minParam / Number(rangeInput[0].max)) * 100 + '%';
+        range!.style.right = 100 - (maxParam / Number(rangeInput[1].max)) * 100 + '%';
+    }
+}
 
-  const brands = Array.from(document.querySelectorAll('.filter-brand-list span')) as Array<HTMLSpanElement>;
-  brands.forEach((f: Element) => {
-      f.innerHTML = String(getProductsCount(productCards, 'brand', f.id));
-  });
+function redrawCountProductsAfterFilter(productCards: ProductCard[], filterField: string) {
+    const fields = Array.from(document.querySelectorAll(`.filter-${filterField}-list span`)) as Array<HTMLSpanElement>;
+    fields.forEach((f: Element) => {
+        f.innerHTML = String(getProductsCount(productCards, filterField, f.id));
+    });
+}
 
+export function recalcFilters(productCards: ProductCard[], caller: string) {
+    redrawCountProductsAfterFilter(productCards, 'category');
+    redrawCountProductsAfterFilter(productCards, 'brand');
+
+    if (caller !== 'slider') {
+        redrawMinMaxRange(productCards, 'price');
+        redrawMinMaxRange(productCards, 'stock');
+    }
 }
 
 export function generateFilter(productCards: ProductCard[], filterField: string) {
@@ -65,13 +90,17 @@ export function filter(productCards: ProductCard[]): ProductCard[] {
     const filterBrand = filters.filter((i) => i.getAttribute('data-filterfield') === 'brand');
     const filterCategoryStrings = filterCategory.map((i) => i.getAttribute('id'));
     const filterBrandStrings = filterBrand.map((i) => i.getAttribute('id'));
-    const filterPrice = document.querySelectorAll('.price-range .range-input input') as unknown as HTMLInputElement[];
-    const filterStock = document.querySelectorAll('.stock-range .range-input input') as unknown as HTMLInputElement[];
+    const filterPrice = document.querySelectorAll('.price-range .price-input input') as unknown as HTMLInputElement[];
+    const filterStock = document.querySelectorAll('.stock-range .price-input input') as unknown as HTMLInputElement[];
 
     if (filterCategoryStrings.length > 0) productCards = productCards.filter((i) => filterCategoryStrings.includes(i.product.category));
     if (filterBrandStrings.length > 0) productCards = productCards.filter((i) => filterBrandStrings.includes(i.product.brand));
-    productCards = productCards.filter((i) => (i.product.price > Number(filterPrice[0].value) && i.product.price < Number(filterPrice[1].value)));
-    productCards = productCards.filter((i) => (i.product.stock > Number(filterStock[0].value) && i.product.stock < Number(filterStock[1].value)));
+    productCards = productCards.filter(
+        (i) => i.product.price >= Number(filterPrice[0].value) && i.product.price <= Number(filterPrice[1].value)
+    );
+    productCards = productCards.filter(
+        (i) => i.product.stock >= Number(filterStock[0].value) && i.product.stock <= Number(filterStock[1].value)
+    );
 
     return productCards;
 }
