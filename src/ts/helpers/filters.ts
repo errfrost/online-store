@@ -1,19 +1,19 @@
 import { ProductCard } from '../service/StoreService';
-import { IProducts, IProductCard } from '../types/interface';
+import { IProductCard } from '../types/interface';
 
-function getFilterFieldArray(products: IProducts, filterField: string) {
+function getFilterFieldArray(productCards: ProductCard[], filterField: string) {
     let filterFieldValues: string[] = [];
-    for (let item in products) {
-        const filterFieldValue = products[item][filterField as keyof IProductCard] as string;
+    for (let item in productCards) {
+        const filterFieldValue = productCards[item].product[filterField as keyof IProductCard] as string;
         if (!filterFieldValues.includes(filterFieldValue)) filterFieldValues.push(filterFieldValue);
     }
     return filterFieldValues;
 }
 
-function getProductsCount(products: IProducts, filterField: string, filterFieldValue: string) {
+function getProductsCount(productCards: ProductCard[], filterField: string, filterFieldValue: string) {
     let counter: number = 0;
-    for (let item in products) {
-        const card = products[item];
+    for (let item in productCards) {
+        const card = productCards[item].product;
         if (filterFieldValue === card[filterField as keyof IProductCard]) counter++;
     }
     return counter;
@@ -25,7 +25,7 @@ function generateFilterLine(filterFieldValue: string, productsCount: number, fil
             <input type="checkbox" id="${filterFieldValue}" class="filter-check" data-filterfield="${filterField}">
             <label for="${filterFieldValue}" class="filter-check-label">${filterFieldValue}</label>
         </div>
-        <div class="checkbox-counter">(0/${productsCount})</div>
+        <div class="checkbox-counter"><span id="${filterFieldValue}">${productsCount}</span>/${productsCount}</div>
     `;
 }
 
@@ -36,11 +36,24 @@ function mount(parent: Element, filterFieldValue: string, productsCount: number,
     parent.append(element);
 }
 
-export function generateFilter(products: IProducts, filterField: string) {
-    const page = document.querySelector('.filter-' + filterField);
-    let filterFieldValues: string[] = getFilterFieldArray(products, filterField);
+export function recalcFilters(productCards: ProductCard[]) {
+  const categories = Array.from(document.querySelectorAll('.filter-category-list span')) as Array<HTMLSpanElement>;
+  categories.forEach((f: Element) => {
+      f.innerHTML = String(getProductsCount(productCards, 'category', f.id));
+  });
+
+  const brands = Array.from(document.querySelectorAll('.filter-brand-list span')) as Array<HTMLSpanElement>;
+  brands.forEach((f: Element) => {
+      f.innerHTML = String(getProductsCount(productCards, 'brand', f.id));
+  });
+
+}
+
+export function generateFilter(productCards: ProductCard[], filterField: string) {
+    const page = document.querySelector('.filter-' + filterField + '-list');
+    let filterFieldValues: string[] = getFilterFieldArray(productCards, filterField);
     for (let i in filterFieldValues) {
-        const productsCount = getProductsCount(products, filterField, filterFieldValues[i]);
+        const productsCount = getProductsCount(productCards, filterField, filterFieldValues[i]);
         mount(page!, filterFieldValues[i], productsCount, filterField);
     }
 }

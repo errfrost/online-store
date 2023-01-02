@@ -4,7 +4,7 @@ import { ProductCard } from '../service/StoreService';
 import { loadProducts, mount } from '../helpers/generate-cards';
 import { IProducts } from '../types/interface';
 import { search } from '../helpers/search';
-import { generateFilter, filter } from '../helpers/filters';
+import { generateFilter, recalcFilters, filter } from '../helpers/filters';
 
 export class Home extends AbstractView {
     constructor(params: QueryStringParams) {
@@ -23,9 +23,13 @@ export class Home extends AbstractView {
                 </div>
                 <div class="filter-category">
                     <h3 class="filter-title">Category</h3>
+                    <div class="filter-category-list">
+                    </div>
                 </div>
                 <div class="filter-brand">
                     <h3 class="filter-title">Brand</h3>
+                    <div class="filter-brand-list">
+                    </div>
                 </div>
                 <div class="filter-price">
                     <h3 class="filter-title">Price</h3>
@@ -136,6 +140,7 @@ export class Home extends AbstractView {
         let productCards = this.convertToProductCard(products);
         productCards = filter(productCards);
         productCards = search(productCards, filterSearch, filterSort);
+        recalcFilters(productCards);
         this.drawProductCards(productCards);
 
         let url: string = window.location.href;
@@ -200,9 +205,10 @@ export class Home extends AbstractView {
 
         const products = (await loadProducts()) as unknown as IProducts;
         let productCards = this.convertToProductCard(products);
-        generateFilter(products, 'category');
-        generateFilter(products, 'brand');
+        generateFilter(productCards, 'category');
+        generateFilter(productCards, 'brand');
         productCards = search(productCards, searchParam!, sortParam!);
+        recalcFilters(productCards);
         this.drawProductCards(productCards);
         this.bindListeners();
     }
