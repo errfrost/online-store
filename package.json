@@ -1,26 +1,16 @@
 {
     "version": "0.1.0",
     "description": "online-store",
-    "private": true,
+    "private": false,
     "name": "online-store",
     "scripts": {
         "start": "webpack serve --env development",
         "build": "webpack",
         "lint": "eslint **/*.ts",
         "lint-fix": "eslint --fix **/*.ts",
-        "format": "prettier -w ."
-    },
-    "husky": {
-        "hooks": {
-            "pre-commit": "lint-staged"
-        }
-    },
-    "lint-staged": {
-        "*.(js|jsx)": [
-            "npm run lint-fix",
-            "format",
-            "git add"
-        ]
+        "format": "prettier -w .",
+        "prepare": "husky install",
+        "postinstall": "husky install"
     },
     "devDependencies": {
         "@typescript-eslint/eslint-plugin": "^5.46.1",

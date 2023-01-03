@@ -1,11 +1,17 @@
 import { AbstractView } from './AbstractView';
 import { QueryStringParams } from '../types/type';
-import { ProductCard } from '../service/StoreService';
 import { loadProducts, mount } from '../helpers/generate-cards';
+import { getProductId } from '../helpers/addProduct';
 import { IProducts } from '../types/interface';
+import { ProductCard } from '../service/StoreService';
 import { search } from '../helpers/search';
 import { generateFilter, recalcFilters, filter } from '../helpers/filters';
 
+import { Cart } from '../service/Cart';
+const shopCart = new Cart();
+const cartCounter = document.querySelector('.cart-counter');
+const cartTotal = document.querySelector('.cart-total__price');
+import { cartSum } from '../helpers/addProduct';
 export class Home extends AbstractView {
     constructor(params: QueryStringParams) {
         super(params);
@@ -298,5 +304,25 @@ export class Home extends AbstractView {
         recalcFilters(productCards, 'firstload');
         this.drawProductCards(productCards);
         this.bindListeners();
+
+        cartTotal!.textContent = `${cartSum(products, shopCart.show())}$`; ///Нужно как-то иначе сделать чтобы не дублировалось  думаю кака то функця обновлния днных
+        cartCounter!.textContent = `${shopCart.length()}`;
+
+        document.addEventListener('click', (e) => {
+            const target = e.target instanceof Element ? e.target : null;
+            const productId = getProductId(e);
+            const currentProduct = products[productId];
+            if (typeof productId === 'number') {
+                if (!target?.classList.contains('remove')) {
+                    shopCart.remove(currentProduct, true);
+                } else {
+                    shopCart.add(currentProduct);
+                }
+            }
+            console.log(shopCart.show());
+            cartTotal!.textContent = `${cartSum(products, shopCart.show())}$`;
+            cartCounter!.textContent = `${shopCart.length()}`;
+            localStorage.setItem('cart', JSON.stringify(shopCart.show()));
+        });
     }
 }

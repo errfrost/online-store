@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { Router, RouterMatch } from './types/interface';
 import { Home } from './view/Home';
+import { CartPage } from './view/CartPage';
 import { Page404 } from './view/Page404';
 
 function pathToRegex(path: string) {
@@ -12,15 +13,15 @@ function getParams(match: RouterMatch) {
     const keys = Array.from(match.route.path.matchAll(/:(\w+)/g)).map((result) => result[1]);
 
     return Object.fromEntries(keys.map((key, i) => [key, values[i]]));
-
 }
 
 async function router() {
     const routes: Router[] = [
         { path: '/', view: Home },
         { path: '/404', view: Page404 },
+        { path: '/cart', view: CartPage },
         { path: '/product/:type', view: Home },
-      ];
+    ];
 
     const potentialMatches = routes.map((route) => ({
         route,
