@@ -68,7 +68,7 @@ export function recalcFilters(productCards: ProductCard[], caller: string) {
     redrawCountProductsAfterFilter(productCards, 'category');
     redrawCountProductsAfterFilter(productCards, 'brand');
 
-    if (caller !== 'slider') {
+    if (caller !== 'slider' && caller !== 'firstload') {
         redrawMinMaxRange(productCards, 'price');
         redrawMinMaxRange(productCards, 'stock');
     }

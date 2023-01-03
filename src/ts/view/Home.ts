@@ -59,7 +59,7 @@ export class Home extends AbstractView {
                             <input type="number" class="input-min" value="2" readonly>
                           </div>
                           <div class="field">
-                            <input type="number" class="input-max" value="96" readonly>
+                            <input type="number" class="input-max" value="150" readonly>
                           </div>
                         </div>
                         <div class="slider">
@@ -142,17 +142,17 @@ export class Home extends AbstractView {
         productCards = search(productCards, filterSearch, filterSort);
         recalcFilters(productCards, caller);
         this.drawProductCards(productCards);
-  
+
         let url: string = window.location.href;
 
         let filterCategory = Array.from(document.querySelectorAll('.filter-category-list .filter-check') as unknown as HTMLInputElement[]);
-        filterCategory = filterCategory.filter(i => i.checked === true);
-        let filterCategoryValues = filterCategory.map(i => i.id).join('|');
+        filterCategory = filterCategory.filter((i) => i.checked === true);
+        let filterCategoryValues = filterCategory.map((i) => i.id).join('|');
         url = this.updateQueryStringParameter(url, 'category', filterCategoryValues);
 
         let filterBrand = Array.from(document.querySelectorAll('.filter-brand-list .filter-check') as unknown as HTMLInputElement[]);
-        filterBrand = filterBrand.filter(i => i.checked === true);
-        let filterBrandValues = filterBrand.map(i => i.id).join('|');
+        filterBrand = filterBrand.filter((i) => i.checked === true);
+        let filterBrandValues = filterBrand.map((i) => i.id).join('|');
         url = this.updateQueryStringParameter(url, 'brand', filterBrandValues);
 
         const priceInput = document.querySelectorAll(`.price-range .price-input input`) as unknown as HTMLInputElement[];
@@ -220,18 +220,82 @@ export class Home extends AbstractView {
     }
 
     async mounted() {
-        let params = new URL(window.location.href).searchParams;
-        let searchParam = params.has('search') ? params.get('search') : '';
-        (document.querySelector('.product-search') as HTMLInputElement).value = searchParam as string;
-        let sortParam = params.has('sort') ? params.get('sort') : '';
-        (document.querySelector('.product-sort') as HTMLSelectElement).value = sortParam as string;
-
         const products = (await loadProducts()) as unknown as IProducts;
         let productCards = this.convertToProductCard(products);
         generateFilter(productCards, 'category');
         generateFilter(productCards, 'brand');
+
+        let params = new URL(window.location.href).searchParams;
+
+        //restore 'search' from QS
+        let searchParam = params.has('search') ? params.get('search') : '';
+        (document.querySelector('.product-search') as HTMLInputElement).value = searchParam as string;
+
+        //restore 'sort' from QS
+        let sortParam = params.has('sort') ? params.get('sort') : '';
+        (document.querySelector('.product-sort') as HTMLSelectElement).value = sortParam as string;
+
+        //restore 'category' from QS
+        let categoryParam = params.has('category') ? params.get('category') : '';
+        if (categoryParam !== '') {
+            let filterCategory = Array.from(
+                document.querySelectorAll('.filter-category-list .filter-check') as unknown as HTMLInputElement[]
+            );
+            let filterCategoryValues = categoryParam!.split('|');
+            filterCategory.forEach(element => {
+                if (filterCategoryValues.includes(element.id)) element.checked = true;
+            });
+        }
+
+        //restore 'brand' from QS
+        let brandParam = params.has('brand') ? params.get('brand') : '';
+        if (brandParam !== '') {
+            let filterBrand = Array.from(
+                document.querySelectorAll('.filter-brand-list .filter-check') as unknown as HTMLInputElement[]
+            );
+            let filterBrandValues = brandParam!.split('|');
+            filterBrand.forEach(element => {
+                if (filterBrandValues.includes(element.id)) element.checked = true;
+            });
+        }
+
+        //restore min & max 'price' from QS
+        const minpriceParam = params.has('minprice') ? params.get('minprice') : '';
+        const maxpriceParam = params.has('maxprice') ? params.get('maxprice') : '';
+        let priceInput = document.querySelectorAll(`.price-range .price-input input`) as unknown as HTMLInputElement[];
+        let rangeInput = document.querySelectorAll(`.price-range .range-input input`) as unknown as HTMLInputElement[];
+        let range = document.querySelector(`.price-range .slider .progress`) as HTMLDivElement;
+        if (minpriceParam !== '') {
+            priceInput[0].value = minpriceParam!.toString();
+            rangeInput[0].value = minpriceParam!.toString();
+            range!.style.left = (Number(minpriceParam!) / Number(rangeInput[0].max)) * 100 + '%';
+        }
+        if (maxpriceParam !== '') {
+            priceInput[1].value = maxpriceParam!.toString();
+            rangeInput[1].value = maxpriceParam!.toString();
+            range!.style.right = 100 - (Number(maxpriceParam) / Number(rangeInput[1].max)) * 100 + '%';
+        }
+
+        //restore min & max 'in stock' from QS
+        const minstockParam = params.has('minstock') ? params.get('minstock') : '';
+        const maxstockParam = params.has('maxstock') ? params.get('maxstock') : '';
+        priceInput = document.querySelectorAll(`.stock-range .price-input input`) as unknown as HTMLInputElement[];
+        rangeInput = document.querySelectorAll(`.stock-range .range-input input`) as unknown as HTMLInputElement[];
+        range = document.querySelector(`.stock-range .slider .progress`) as HTMLDivElement;
+        if (minstockParam !== '') {
+            priceInput[0].value = minstockParam!.toString();
+            rangeInput[0].value = minstockParam!.toString();
+            range!.style.left = (Number(minstockParam!) / Number(rangeInput[0].max)) * 100 + '%';
+        }
+        if (maxstockParam !== '') {
+            priceInput[1].value = maxstockParam!.toString();
+            rangeInput[1].value = maxstockParam!.toString();
+            range!.style.right = 100 - (Number(maxstockParam) / Number(rangeInput[1].max)) * 100 + '%';
+        }
+
+        productCards = filter(productCards);
         productCards = search(productCards, searchParam!, sortParam!);
-        recalcFilters(productCards, '');
+        recalcFilters(productCards, 'firstload');
         this.drawProductCards(productCards);
         this.bindListeners();
     }
