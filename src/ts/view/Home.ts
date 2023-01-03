@@ -142,9 +142,32 @@ export class Home extends AbstractView {
         productCards = search(productCards, filterSearch, filterSort);
         recalcFilters(productCards, caller);
         this.drawProductCards(productCards);
-
+  
         let url: string = window.location.href;
-        if (filterSearch !== '') url = this.updateQueryStringParameter(url, 'search', filterSearch);
+
+        let filterCategory = Array.from(document.querySelectorAll('.filter-category-list .filter-check') as unknown as HTMLInputElement[]);
+        filterCategory = filterCategory.filter(i => i.checked === true);
+        let filterCategoryValues = filterCategory.map(i => i.id).join('|');
+        url = this.updateQueryStringParameter(url, 'category', filterCategoryValues);
+
+        let filterBrand = Array.from(document.querySelectorAll('.filter-brand-list .filter-check') as unknown as HTMLInputElement[]);
+        filterBrand = filterBrand.filter(i => i.checked === true);
+        let filterBrandValues = filterBrand.map(i => i.id).join('|');
+        url = this.updateQueryStringParameter(url, 'brand', filterBrandValues);
+
+        const priceInput = document.querySelectorAll(`.price-range .price-input input`) as unknown as HTMLInputElement[];
+        let minprice = priceInput[0].value;
+        let maxprice = priceInput[1].value;
+        url = this.updateQueryStringParameter(url, 'minprice', minprice);
+        url = this.updateQueryStringParameter(url, 'maxprice', maxprice);
+
+        const stockInput = document.querySelectorAll(`.stock-range .price-input input`) as unknown as HTMLInputElement[];
+        let minstock = stockInput[0].value;
+        let maxstock = stockInput[1].value;
+        url = this.updateQueryStringParameter(url, 'minstock', minstock);
+        url = this.updateQueryStringParameter(url, 'maxstock', maxstock);
+
+        url = this.updateQueryStringParameter(url, 'search', filterSearch);
         if (filterSort !== '') url = this.updateQueryStringParameter(url, 'sort', filterSort);
         window.history.pushState({ path: url }, '', url);
     }
