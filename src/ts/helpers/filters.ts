@@ -106,7 +106,7 @@ export function filter(productCards: ProductCard[]): ProductCard[] {
 }
 
 export function resetFilters() {
-  window.open(window.location.pathname, '_self');
+    window.open(window.location.pathname, '_self');
 }
 
 export function copyFilters(e: Event) {
