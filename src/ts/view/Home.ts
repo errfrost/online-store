@@ -128,6 +128,7 @@ export class Home extends AbstractView {
             resultsCount++;
         }
 
+        if (resultsCount === 0) page!.innerHTML = 'No Product Found';
         results!.textContent = `${resultsCount} Results`;
     }
 
