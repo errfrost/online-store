@@ -40,11 +40,11 @@
     align-items: center;
 }
 
-.sort-bar {
+.search-bar, .sort-bar, .view-bar {
     padding: 0 0 0 20px;
 }
 
-.product-sort {
+.product-sort, .product-view {
     height: 36px;
     width: 138px;
     font-size: 16px;
@@ -54,10 +54,6 @@
     box-shadow: none;
     padding: 8px 8px;
     outline: none;
-}
-
-.search-bar {
-    padding: 0 0 0 20px;
 }
 
 .product-search {

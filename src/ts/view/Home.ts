@@ -5,13 +5,15 @@ import { getProductId } from '../helpers/addProduct';
 import { IProducts } from '../types/interface';
 import { ProductCard } from '../service/StoreService';
 import { search } from '../helpers/search';
-import { generateFilter, recalcFilters, filter } from '../helpers/filters';
-
+import { generateFilter, recalcFilters, filter, resetFilters, copyFilters } from '../helpers/filters';
+import { restoreFiltersFromQS, saveFiltersToQS } from '../helpers/querystring';
 import { Cart } from '../service/Cart';
+import { cartSum } from '../helpers/addProduct';
+
 const shopCart = new Cart();
 const cartCounter = document.querySelector('.cart-counter');
 const cartTotal = document.querySelector('.cart-total__price');
-import { cartSum } from '../helpers/addProduct';
+
 export class Home extends AbstractView {
     constructor(params: QueryStringParams) {
         super(params);
@@ -96,6 +98,13 @@ export class Home extends AbstractView {
                             <span>Search:</span>
                             <input type="search" class="product-search">
                         </div>
+                        <div class="view-bar">
+                            <span>View:</span>
+                            <select class="product-view">
+                                <option value="" selected="selected">Default</option>
+                                <option value="mini">Mini</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
                 <ul class="products-list">
@@ -103,16 +112,6 @@ export class Home extends AbstractView {
             </div>
       </section>
     `;
-    }
-
-    updateQueryStringParameter(uri: string, key: string, value: string) {
-        var re = new RegExp('([?&])' + key + '=.*?(&|$)', 'i');
-        var separator = uri.indexOf('?') !== -1 ? '&' : '?';
-        if (uri.match(re)) {
-            return uri.replace(re, '$1' + key + '=' + value + '$2');
-        } else {
-            return uri + separator + key + '=' + value;
-        }
     }
 
     convertToProductCard(products: IProducts): ProductCard[] {
@@ -136,46 +135,21 @@ export class Home extends AbstractView {
             resultsCount++;
         }
 
+        if (resultsCount === 0) page!.innerHTML = 'No Product Found';
         results!.textContent = `${resultsCount} Results`;
     }
 
     async prepareSearch(caller: string) {
-        let filterSearch: string = (document.querySelector('.product-search') as HTMLInputElement).value.toLowerCase();
-        let filterSort: string = (document.querySelector('.product-sort') as HTMLSelectElement).value;
         const products = (await loadProducts()) as unknown as IProducts;
         let productCards = this.convertToProductCard(products);
         productCards = filter(productCards);
+        let filterSearch: string = (document.querySelector('.product-search') as HTMLInputElement).value.toLowerCase();
+        let filterSort: string = (document.querySelector('.product-sort') as HTMLSelectElement).value;
         productCards = search(productCards, filterSearch, filterSort);
         recalcFilters(productCards, caller);
         this.drawProductCards(productCards);
-
-        let url: string = window.location.href;
-
-        let filterCategory = Array.from(document.querySelectorAll('.filter-category-list .filter-check') as unknown as HTMLInputElement[]);
-        filterCategory = filterCategory.filter((i) => i.checked === true);
-        let filterCategoryValues = filterCategory.map((i) => i.id).join('|');
-        url = this.updateQueryStringParameter(url, 'category', filterCategoryValues);
-
-        let filterBrand = Array.from(document.querySelectorAll('.filter-brand-list .filter-check') as unknown as HTMLInputElement[]);
-        filterBrand = filterBrand.filter((i) => i.checked === true);
-        let filterBrandValues = filterBrand.map((i) => i.id).join('|');
-        url = this.updateQueryStringParameter(url, 'brand', filterBrandValues);
-
-        const priceInput = document.querySelectorAll(`.price-range .price-input input`) as unknown as HTMLInputElement[];
-        let minprice = priceInput[0].value;
-        let maxprice = priceInput[1].value;
-        url = this.updateQueryStringParameter(url, 'minprice', minprice);
-        url = this.updateQueryStringParameter(url, 'maxprice', maxprice);
-
-        const stockInput = document.querySelectorAll(`.stock-range .price-input input`) as unknown as HTMLInputElement[];
-        let minstock = stockInput[0].value;
-        let maxstock = stockInput[1].value;
-        url = this.updateQueryStringParameter(url, 'minstock', minstock);
-        url = this.updateQueryStringParameter(url, 'maxstock', maxstock);
-
-        url = this.updateQueryStringParameter(url, 'search', filterSearch);
-        if (filterSort !== '') url = this.updateQueryStringParameter(url, 'sort', filterSort);
-        window.history.pushState({ path: url }, '', url);
+        this.changeView();
+        saveFiltersToQS();
     }
 
     sliderListener(slider: string) {
@@ -206,12 +180,30 @@ export class Home extends AbstractView {
         });
     }
 
+    changeView() {
+        const view: string = (document.querySelector('.product-view') as HTMLSelectElement).value;
+        const products = document.querySelectorAll('.product-card__thumbnail') as unknown as HTMLDivElement[];
+        products.forEach((element) => {
+            if (view === 'mini') element.style.display = 'none';
+            else element.style.display = 'block';
+        });
+    }
+
     async bindListeners() {
         document.querySelector('.product-search')?.addEventListener('search', async (e) => {
             await this.prepareSearch('search');
         });
         document.querySelector('.product-sort')?.addEventListener('change', async (e) => {
             await this.prepareSearch('sort');
+        });
+        document.querySelector('.product-view')?.addEventListener('change', async (e) => {
+            await this.prepareSearch('view');
+        });
+        document.querySelector('.filter-reset')?.addEventListener('click', (e) => {
+            resetFilters();
+        });
+        document.querySelector('.filter-copy')?.addEventListener('click', (e) => {
+            copyFilters(e);
         });
 
         const filters = Array.from(document.querySelectorAll('input[type=checkbox]')) as Array<HTMLInputElement>;
@@ -230,79 +222,15 @@ export class Home extends AbstractView {
         let productCards = this.convertToProductCard(products);
         generateFilter(productCards, 'category');
         generateFilter(productCards, 'brand');
-
         let params = new URL(window.location.href).searchParams;
-
-        //restore 'search' from QS
-        let searchParam = params.has('search') ? params.get('search') : '';
-        (document.querySelector('.product-search') as HTMLInputElement).value = searchParam as string;
-
-        //restore 'sort' from QS
-        let sortParam = params.has('sort') ? params.get('sort') : '';
-        (document.querySelector('.product-sort') as HTMLSelectElement).value = sortParam as string;
-
-        //restore 'category' from QS
-        let categoryParam = params.has('category') ? params.get('category') : '';
-        if (categoryParam !== '') {
-            let filterCategory = Array.from(
-                document.querySelectorAll('.filter-category-list .filter-check') as unknown as HTMLInputElement[]
-            );
-            let filterCategoryValues = categoryParam!.split('|');
-            filterCategory.forEach(element => {
-                if (filterCategoryValues.includes(element.id)) element.checked = true;
-            });
-        }
-
-        //restore 'brand' from QS
-        let brandParam = params.has('brand') ? params.get('brand') : '';
-        if (brandParam !== '') {
-            let filterBrand = Array.from(
-                document.querySelectorAll('.filter-brand-list .filter-check') as unknown as HTMLInputElement[]
-            );
-            let filterBrandValues = brandParam!.split('|');
-            filterBrand.forEach(element => {
-                if (filterBrandValues.includes(element.id)) element.checked = true;
-            });
-        }
-
-        //restore min & max 'price' from QS
-        const minpriceParam = params.has('minprice') ? params.get('minprice') : '';
-        const maxpriceParam = params.has('maxprice') ? params.get('maxprice') : '';
-        let priceInput = document.querySelectorAll(`.price-range .price-input input`) as unknown as HTMLInputElement[];
-        let rangeInput = document.querySelectorAll(`.price-range .range-input input`) as unknown as HTMLInputElement[];
-        let range = document.querySelector(`.price-range .slider .progress`) as HTMLDivElement;
-        if (minpriceParam !== '') {
-            priceInput[0].value = minpriceParam!.toString();
-            rangeInput[0].value = minpriceParam!.toString();
-            range!.style.left = (Number(minpriceParam!) / Number(rangeInput[0].max)) * 100 + '%';
-        }
-        if (maxpriceParam !== '') {
-            priceInput[1].value = maxpriceParam!.toString();
-            rangeInput[1].value = maxpriceParam!.toString();
-            range!.style.right = 100 - (Number(maxpriceParam) / Number(rangeInput[1].max)) * 100 + '%';
-        }
-
-        //restore min & max 'in stock' from QS
-        const minstockParam = params.has('minstock') ? params.get('minstock') : '';
-        const maxstockParam = params.has('maxstock') ? params.get('maxstock') : '';
-        priceInput = document.querySelectorAll(`.stock-range .price-input input`) as unknown as HTMLInputElement[];
-        rangeInput = document.querySelectorAll(`.stock-range .range-input input`) as unknown as HTMLInputElement[];
-        range = document.querySelector(`.stock-range .slider .progress`) as HTMLDivElement;
-        if (minstockParam !== '') {
-            priceInput[0].value = minstockParam!.toString();
-            rangeInput[0].value = minstockParam!.toString();
-            range!.style.left = (Number(minstockParam!) / Number(rangeInput[0].max)) * 100 + '%';
-        }
-        if (maxstockParam !== '') {
-            priceInput[1].value = maxstockParam!.toString();
-            rangeInput[1].value = maxstockParam!.toString();
-            range!.style.right = 100 - (Number(maxstockParam) / Number(rangeInput[1].max)) * 100 + '%';
-        }
-
+        restoreFiltersFromQS(params);
         productCards = filter(productCards);
-        productCards = search(productCards, searchParam!, sortParam!);
+        let filterSearch: string = (document.querySelector('.product-search') as HTMLInputElement).value.toLowerCase();
+        let filterSort: string = (document.querySelector('.product-sort') as HTMLSelectElement).value;
+        productCards = search(productCards, filterSearch, filterSort);
         recalcFilters(productCards, 'firstload');
         this.drawProductCards(productCards);
+        this.changeView();
         this.bindListeners();
 
         cartTotal!.textContent = `${cartSum(products, shopCart.show())}$`; ///Нужно как-то иначе сделать чтобы не дублировалось  думаю кака то функця обновлния днных
