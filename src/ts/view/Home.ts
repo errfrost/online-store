@@ -148,6 +148,7 @@ export class Home extends AbstractView {
         productCards = search(productCards, filterSearch, filterSort);
         recalcFilters(productCards, caller);
         this.drawProductCards(productCards);
+        this.changeView();
         saveFiltersToQS();
     }
 
@@ -179,8 +180,8 @@ export class Home extends AbstractView {
         });
     }
 
-    changeView(e: Event) {
-        const view: string = (e.target as HTMLSelectElement).value;
+    changeView() {
+        const view: string = (document.querySelector('.product-view') as HTMLSelectElement).value;
         const products = document.querySelectorAll('.product-card__thumbnail') as unknown as HTMLDivElement[];
         products.forEach((element) => {
             if (view === 'mini') element.style.display = 'none';
@@ -195,8 +196,8 @@ export class Home extends AbstractView {
         document.querySelector('.product-sort')?.addEventListener('change', async (e) => {
             await this.prepareSearch('sort');
         });
-        document.querySelector('.product-view')?.addEventListener('change', (e) => {
-            this.changeView(e);
+        document.querySelector('.product-view')?.addEventListener('change', async (e) => {
+            await this.prepareSearch('view');
         });
         document.querySelector('.filter-reset')?.addEventListener('click', (e) => {
             resetFilters();
@@ -229,6 +230,7 @@ export class Home extends AbstractView {
         productCards = search(productCards, filterSearch, filterSort);
         recalcFilters(productCards, 'firstload');
         this.drawProductCards(productCards);
+        this.changeView();
         this.bindListeners();
 
         cartTotal!.textContent = `${cartSum(products, shopCart.show())}$`; ///Нужно как-то иначе сделать чтобы не дублировалось  думаю кака то функця обновлния днных

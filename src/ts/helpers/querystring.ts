@@ -36,7 +36,11 @@ export function saveFiltersToQS() {
     let filterSearch: string = (document.querySelector('.product-search') as HTMLInputElement).value.toLowerCase();
     let filterSort: string = (document.querySelector('.product-sort') as HTMLSelectElement).value;
     url = updateQueryStringParameter(url, 'search', filterSearch);
-    if (filterSort !== '') url = updateQueryStringParameter(url, 'sort', filterSort);
+    url = updateQueryStringParameter(url, 'sort', filterSort);
+
+    let view: string = (document.querySelector('.product-view') as HTMLSelectElement).value;
+    url = updateQueryStringParameter(url, 'view', view);
+
     window.history.pushState({ path: url }, '', url);
 }
 
@@ -48,6 +52,10 @@ export function restoreFiltersFromQS(params: URLSearchParams) {
     //restore 'sort' from QS
     let sortParam = params.has('sort') ? params.get('sort') : '';
     (document.querySelector('.product-sort') as HTMLSelectElement).value = sortParam as string;
+
+    //restore 'view' from QS
+    let viewParam = params.has('view') ? params.get('view') : '';
+    (document.querySelector('.product-view') as HTMLSelectElement).value = viewParam as string;
 
     //restore 'category' from QS
     let categoryParam = params.has('category') ? params.get('category') : '';
