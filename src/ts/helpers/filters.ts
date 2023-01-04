@@ -104,3 +104,14 @@ export function filter(productCards: ProductCard[]): ProductCard[] {
 
     return productCards;
 }
+
+export function resetFilters() {
+  window.open(window.location.pathname, '_self');
+}
+
+export function copyFilters(e: Event) {
+    let url: string = window.location.href;
+    navigator.clipboard.writeText(url);
+    (<HTMLButtonElement>e.target).innerText = 'Copied';
+    setTimeout(() => ((<HTMLButtonElement>e.target).innerText = 'Copy Link'), 2000);
+}

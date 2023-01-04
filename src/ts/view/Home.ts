@@ -5,7 +5,7 @@ import { getProductId } from '../helpers/addProduct';
 import { IProducts } from '../types/interface';
 import { ProductCard } from '../service/StoreService';
 import { search } from '../helpers/search';
-import { generateFilter, recalcFilters, filter } from '../helpers/filters';
+import { generateFilter, recalcFilters, filter, resetFilters, copyFilters } from '../helpers/filters';
 import { restoreFiltersFromQS, saveFiltersToQS } from '../helpers/querystring';
 import { Cart } from '../service/Cart';
 import { cartSum } from '../helpers/addProduct';
@@ -177,6 +177,12 @@ export class Home extends AbstractView {
         });
         document.querySelector('.product-sort')?.addEventListener('change', async (e) => {
             await this.prepareSearch('sort');
+        });
+        document.querySelector('.filter-reset')?.addEventListener('click', async (e) => {
+            resetFilters();
+        });
+        document.querySelector('.filter-copy')?.addEventListener('click', async (e) => {
+            copyFilters(e);
         });
 
         const filters = Array.from(document.querySelectorAll('input[type=checkbox]')) as Array<HTMLInputElement>;
