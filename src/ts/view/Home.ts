@@ -98,6 +98,13 @@ export class Home extends AbstractView {
                             <span>Search:</span>
                             <input type="search" class="product-search">
                         </div>
+                        <div class="view-bar">
+                            <span>View:</span>
+                            <select class="product-view">
+                                <option value="" selected="selected">Default</option>
+                                <option value="mini">Mini</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
                 <ul class="products-list">
@@ -172,6 +179,15 @@ export class Home extends AbstractView {
         });
     }
 
+    changeView(e: Event) {
+        const view: string = (e.target as HTMLSelectElement).value;
+        const products = document.querySelectorAll('.product-card__thumbnail') as unknown as HTMLDivElement[];
+        products.forEach((element) => {
+            if (view === 'mini') element.style.display = 'none';
+            else element.style.display = 'block';
+        });
+    }
+
     async bindListeners() {
         document.querySelector('.product-search')?.addEventListener('search', async (e) => {
             await this.prepareSearch('search');
@@ -179,10 +195,13 @@ export class Home extends AbstractView {
         document.querySelector('.product-sort')?.addEventListener('change', async (e) => {
             await this.prepareSearch('sort');
         });
-        document.querySelector('.filter-reset')?.addEventListener('click', async (e) => {
+        document.querySelector('.product-view')?.addEventListener('change', (e) => {
+            this.changeView(e);
+        });
+        document.querySelector('.filter-reset')?.addEventListener('click', (e) => {
             resetFilters();
         });
-        document.querySelector('.filter-copy')?.addEventListener('click', async (e) => {
+        document.querySelector('.filter-copy')?.addEventListener('click', (e) => {
             copyFilters(e);
         });
 
