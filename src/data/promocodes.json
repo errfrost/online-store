@@ -1,0 +1,14 @@
+{
+    "promocodes": [
+        {
+            "id": 0,
+            "description": "New Year Promo",
+            "code": "2023"
+        },
+        {
+            "id": 1,
+            "description": "Rs school promocode",
+            "code": "rs"
+        }
+    ]
+}

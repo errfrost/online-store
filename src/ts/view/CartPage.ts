@@ -2,9 +2,10 @@ import { AbstractView } from './AbstractView';
 import { QueryStringParams } from '../types/type';
 import { Cart } from '../service/Cart';
 import { generateCard, loadProducts } from '../helpers/generate-cards';
-import { IProducts } from '../types/interface';
+import { IProducts, Promocodes } from '../types/interface';
 import { cartSum } from '../helpers/addProduct';
 import { generateCartItem } from '../helpers/generateCartItem';
+import { getPromocode, loadPromocodes } from '../helpers/promocode';
 
 export class CartPage extends AbstractView {
     constructor(params: QueryStringParams) {
@@ -46,7 +47,12 @@ export class CartPage extends AbstractView {
                 <div class="summary__products-title">
                     Total: <span class="summary__products-price">500$</span>
                 </div>
-                <input class="summary__products-promocode" type="text" placeholder="Enter promo code">
+                
+                <div class="summary__promocodes">
+                    <div class="summary__promocodes-title">Applied codes</div>
+                    <div class="summary__promocodes-item">Rolling Scopes School 10%<button>DROP</button></div>
+                </div>
+                <input class="summary__products-promocode" type="search" placeholder="Enter promo code">
                 <button class="buy-btn">Buy now</button>
             </div>
         </div>
@@ -60,13 +66,16 @@ export class CartPage extends AbstractView {
         const cartList = document.querySelector('.cart__list');
         const summaryCounter = document.querySelector('.summary__products-counter');
         const summaryPrice = document.querySelector('.summary__products-price');
+        const promocodeInput = document.querySelector('.summary__products-promocode');
+        const promocodeBlock = document.querySelector('.summary__promocodes');
+        const promocodesList: Promocodes[] = await loadPromocodes();
+        const activePromocodes: Promocodes[] = [];
         const shopCart = new Cart();
         cartTotal!.textContent = `${cartSum(products, shopCart.show())}$`;
         summaryPrice!.textContent = `${cartSum(products, shopCart.show())}$`;
         ///Нужно как-то иначе сделать чтобы не дублировалось  думаю кака то функця обновлния днных
         cartCounter!.textContent = `${shopCart.length()}`;
         summaryCounter!.textContent = `${shopCart.length()}`;
-        console.log(shopCart.show());
         for (let key of shopCart.show()) {
             const item = generateCartItem(products[key.id], key.count);
             cartList!.insertAdjacentHTML('beforeend', item);
@@ -100,6 +109,16 @@ export class CartPage extends AbstractView {
             summaryCounter!.textContent = `${shopCart.length()}`;
             summaryPrice!.textContent = `${cartSum(products, shopCart.show())}$`;
             localStorage.setItem('cart', JSON.stringify(shopCart.show()));
+        });
+        promocodeInput!.addEventListener('search', async (event) => {
+            let target = event.target as HTMLInputElement;
+            let isPromocode = await getPromocode(target.value, activePromocodes);
+            console.log(activePromocodes);
+            if (isPromocode) {
+                activePromocodes.push(isPromocode);
+                console.log(activePromocodes);
+                const newCode = `<div class="summary__promocodes-item">Rolling Scopes School 10%<button>DROP</button></div>`;
+            }
         });
     }
 }
