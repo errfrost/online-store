@@ -2,6 +2,7 @@
 import { Router, RouterMatch } from './types/interface';
 import { Home } from './view/Home';
 import { CartPage } from './view/CartPage';
+import { ProductPage } from './view/ProductPage';
 import { Page404 } from './view/Page404';
 
 function pathToRegex(path: string) {
@@ -20,7 +21,7 @@ async function router() {
         { path: '/', view: Home },
         { path: '/404', view: Page404 },
         { path: '/cart', view: CartPage },
-        { path: '/product/:type', view: Home },
+        { path: '/product/:type', view: ProductPage },
     ];
 
     const potentialMatches = routes.map((route) => ({
