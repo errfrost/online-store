@@ -38,7 +38,7 @@ export function mount(parent: Element, card: ProductCard): void {
 }
 
 export async function loadProducts() {
-    const res = await fetch(`data/products.json`);
+    const res = await fetch(`../data/products.json`);
     const data = (await res.json()) as LoaderOption;
     return data.products;
 }
