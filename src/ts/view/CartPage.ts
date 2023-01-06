@@ -5,7 +5,7 @@ import { generateCard, loadProducts } from '../helpers/generate-cards';
 import { IProducts, Promocodes } from '../types/interface';
 import { cartSum } from '../helpers/addProduct';
 import { generateCartItem } from '../helpers/generateCartItem';
-import { getPromocode, generatePromoItem, removePromo } from '../helpers/promocode';
+import { getPromocode, generatePromoItem, removePromo, getPromoDiscount } from '../helpers/promocode';
 
 export class CartPage extends AbstractView {
     constructor(params: QueryStringParams) {
@@ -73,7 +73,10 @@ export class CartPage extends AbstractView {
         const activePromocodes: Promocodes[] = JSON.parse(localStorage.getItem('promo')!) || [];
         const shopCart = new Cart();
         cartTotal!.textContent = `${cartSum(products, shopCart.show())}$`;
-        summaryPrice!.textContent = `${cartSum(products, shopCart.show())}$`;
+        summaryPrice!.textContent = `${(
+            +cartSum(products, shopCart.show()) -
+            +cartSum(products, shopCart.show()) * (getPromoDiscount(activePromocodes) / 100)
+        ).toFixed(2)}$`;
         ///Нужно как-то иначе сделать чтобы не дублировалось  думаю кака то функця обновлния днных
         cartCounter!.textContent = `${shopCart.length()}`;
         summaryCounter!.textContent = `${shopCart.length()}`;
@@ -90,8 +93,10 @@ export class CartPage extends AbstractView {
                     const cartItemId = Number(cartItem?.getAttribute('data-productid'));
                     const counter = target.parentElement.querySelector('.cart__paginator-item')!;
                     if (target.classList.contains('button_plus')) {
-                        shopCart.add(products[cartItemId]);
-                        counter.textContent = (Number(counter.textContent!) + 1).toString();
+                        if (products[cartItemId].stock > Number(counter.textContent!)) {
+                            shopCart.add(products[cartItemId]);
+                            counter.textContent = (Number(counter.textContent!) + 1).toString();
+                        }
                     } else if (target.classList.contains('button_minus')) {
                         counter.textContent = (Number(counter.textContent!) - 1).toString();
                         shopCart.remove(products[cartItemId]);
@@ -108,7 +113,10 @@ export class CartPage extends AbstractView {
             ///Нужно как-то иначе сделать чтобы не дублировалось  думаю кака то функця обновлния днных
             cartCounter!.textContent = `${shopCart.length()}`;
             summaryCounter!.textContent = `${shopCart.length()}`;
-            summaryPrice!.textContent = `${cartSum(products, shopCart.show())}$`;
+            summaryPrice!.textContent = `${(
+                +cartSum(products, shopCart.show()) -
+                +cartSum(products, shopCart.show()) * (getPromoDiscount(activePromocodes) / 100)
+            ).toFixed(2)}$`;
             localStorage.setItem('cart', JSON.stringify(shopCart.show()));
         });
         promocodeInput!.addEventListener('search', async (event) => {
@@ -119,14 +127,23 @@ export class CartPage extends AbstractView {
                 promocodeBlockList!.innerHTML = '';
                 generatePromoItem(activePromocodes, promocodeBlockList as HTMLElement);
             }
+            summaryPrice!.textContent = `${(
+                +cartSum(products, shopCart.show()) -
+                +cartSum(products, shopCart.show()) * (getPromoDiscount(activePromocodes) / 100)
+            ).toFixed(2)}$`;
         });
         generatePromoItem(activePromocodes, promocodeBlockList as HTMLElement);
         promocodeBlock!.addEventListener('click', (event) => {
             const target = event.target as HTMLElement;
             if (target instanceof HTMLButtonElement) {
-                target.parentElement!.remove();
-                removePromo(activePromocodes);
+                const promoItem = target.parentElement!;
+                removePromo(activePromocodes, Number(promoItem.dataset.promoid));
+                promoItem.remove();
             }
+            summaryPrice!.textContent = `${(
+                +cartSum(products, shopCart.show()) -
+                +cartSum(products, shopCart.show()) * (getPromoDiscount(activePromocodes) / 100)
+            ).toFixed(2)}$`;
         });
     }
 }
