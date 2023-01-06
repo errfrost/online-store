@@ -34,9 +34,14 @@
             color: $green;
         }
     }
+    &__buttons {
+      display: flex;
+      justify-content: space-around;
+      width: 100%;
+    }
     &__button {
         font-weight: 700;
-        width: 137px;
+        width: 87px;
         border: none;
         padding: 13px 0;
         margin-bottom: 12px;

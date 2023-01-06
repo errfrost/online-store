@@ -238,19 +238,26 @@ export class Home extends AbstractView {
 
         document.addEventListener('click', (e) => {
             const target = e.target instanceof Element ? e.target : null;
-            const productId = getProductId(e);
-            const currentProduct = products[productId];
-            if (typeof productId === 'number') {
-                if (!target?.classList.contains('remove')) {
-                    shopCart.remove(currentProduct, true);
-                } else {
-                    shopCart.add(currentProduct);
+            if (target?.classList.contains('product-card__button')) {
+                const productId = getProductId(e);
+                const currentProduct = products[productId];
+                if (typeof productId === 'number') {
+                    if (target?.classList.contains('add')) {
+                        if (!target?.classList.contains('remove')) {
+                            shopCart.remove(currentProduct, true);
+                        } else {
+                            shopCart.add(currentProduct);
+                        }
+                        console.log(shopCart.show());
+                        cartTotal!.textContent = `${cartSum(products, shopCart.show())}$`;
+                        cartCounter!.textContent = `${shopCart.length()}`;
+                        localStorage.setItem('cart', JSON.stringify(shopCart.show()));
+                    }
+                    if (target?.classList.contains('info')) {
+                        window.location.href = `/product/${productId}`;
+                    }
                 }
             }
-            console.log(shopCart.show());
-            cartTotal!.textContent = `${cartSum(products, shopCart.show())}$`;
-            cartCounter!.textContent = `${shopCart.length()}`;
-            localStorage.setItem('cart', JSON.stringify(shopCart.show()));
         });
     }
 }
