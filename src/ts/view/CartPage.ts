@@ -5,7 +5,7 @@ import { generateCard, loadProducts } from '../helpers/generate-cards';
 import { IProducts, Promocodes } from '../types/interface';
 import { cartSum } from '../helpers/addProduct';
 import { generateCartItem } from '../helpers/generateCartItem';
-import { getPromocode, loadPromocodes } from '../helpers/promocode';
+import { getPromocode, generatePromoItem, removePromo } from '../helpers/promocode';
 
 export class CartPage extends AbstractView {
     constructor(params: QueryStringParams) {
@@ -50,7 +50,8 @@ export class CartPage extends AbstractView {
                 
                 <div class="summary__promocodes">
                     <div class="summary__promocodes-title">Applied codes</div>
-                    <div class="summary__promocodes-item">Rolling Scopes School 10%<button>DROP</button></div>
+                    <div class="summary__promocodes-list">
+                    </div>
                 </div>
                 <input class="summary__products-promocode" type="search" placeholder="Enter promo code">
                 <button class="buy-btn">Buy now</button>
@@ -68,8 +69,8 @@ export class CartPage extends AbstractView {
         const summaryPrice = document.querySelector('.summary__products-price');
         const promocodeInput = document.querySelector('.summary__products-promocode');
         const promocodeBlock = document.querySelector('.summary__promocodes');
-        const promocodesList: Promocodes[] = await loadPromocodes();
-        const activePromocodes: Promocodes[] = [];
+        const promocodeBlockList = document.querySelector('.summary__promocodes-list');
+        const activePromocodes: Promocodes[] = JSON.parse(localStorage.getItem('promo')!) || [];
         const shopCart = new Cart();
         cartTotal!.textContent = `${cartSum(products, shopCart.show())}$`;
         summaryPrice!.textContent = `${cartSum(products, shopCart.show())}$`;
@@ -113,11 +114,18 @@ export class CartPage extends AbstractView {
         promocodeInput!.addEventListener('search', async (event) => {
             let target = event.target as HTMLInputElement;
             let isPromocode = await getPromocode(target.value, activePromocodes);
-            console.log(activePromocodes);
             if (isPromocode) {
                 activePromocodes.push(isPromocode);
-                console.log(activePromocodes);
-                const newCode = `<div class="summary__promocodes-item">Rolling Scopes School 10%<button>DROP</button></div>`;
+                promocodeBlockList!.innerHTML = '';
+                generatePromoItem(activePromocodes, promocodeBlockList as HTMLElement);
+            }
+        });
+        generatePromoItem(activePromocodes, promocodeBlockList as HTMLElement);
+        promocodeBlock!.addEventListener('click', (event) => {
+            const target = event.target as HTMLElement;
+            if (target instanceof HTMLButtonElement) {
+                target.parentElement!.remove();
+                removePromo(activePromocodes);
             }
         });
     }

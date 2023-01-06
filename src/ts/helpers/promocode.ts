@@ -32,3 +32,22 @@ export async function getPromocode(promocode: string, list: Promocodes[]) {
         return result;
     }
 }
+
+export function generatePromoItem(list: Promocodes[], domElement: HTMLElement) {
+    domElement.innerHTML = '';
+    for (let key of list) {
+        const newCode = `<div class="summary__promocodes-item" dataPromoId="${key.id}">${key.description} 
+        ${key.discountPercentage}%<button>DROP</button></div>`;
+        domElement!.insertAdjacentHTML('beforeend', newCode);
+        localStorage.setItem('promo', JSON.stringify(list));
+    }
+}
+
+export function removePromo(list: Promocodes[], promoId: number) {
+    for (let item of list) {
+        if (item.id === promoId) {
+            console.log(list.indexOf(item));
+            // list.splice(0, 1);
+        }
+    }
+}

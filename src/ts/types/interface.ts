@@ -41,6 +41,7 @@ export interface Promocodes {
     id: number;
     description: string;
     code: string;
+    discountPercentage: number;
 }
 
 export interface IcartItem {

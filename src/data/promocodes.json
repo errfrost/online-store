@@ -3,12 +3,14 @@
         {
             "id": 0,
             "description": "New Year Promo",
-            "code": "2023"
+            "code": "2023",
+            "discountPercentage": 10
         },
         {
             "id": 1,
             "description": "Rs school promocode",
-            "code": "rs"
+            "code": "rs",
+            "discountPercentage": 30
         }
     ]
 }
