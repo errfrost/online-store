@@ -10,10 +10,6 @@ import { restoreFiltersFromQS, saveFiltersToQS } from '../helpers/querystring';
 import { Cart } from '../service/Cart';
 import { cartSum } from '../helpers/addProduct';
 
-const shopCart = new Cart();
-const cartCounter = document.querySelector('.cart-counter');
-const cartTotal = document.querySelector('.cart-total__price');
-
 export class Home extends AbstractView {
     constructor(params: QueryStringParams) {
         super(params);
@@ -233,24 +229,34 @@ export class Home extends AbstractView {
         this.changeView();
         this.bindListeners();
 
+        const shopCart = new Cart();
+        const cartCounter = document.querySelector('.cart-counter');
+        const cartTotal = document.querySelector('.cart-total__price');
         cartTotal!.textContent = `${cartSum(products, shopCart.show())}$`; ///Нужно как-то иначе сделать чтобы не дублировалось  думаю кака то функця обновлния днных
         cartCounter!.textContent = `${shopCart.length()}`;
 
         document.addEventListener('click', (e) => {
             const target = e.target instanceof Element ? e.target : null;
-            const productId = getProductId(e);
-            const currentProduct = products[productId];
-            if (typeof productId === 'number') {
-                if (!target?.classList.contains('remove')) {
-                    shopCart.remove(currentProduct, true);
-                } else {
-                    shopCart.add(currentProduct);
+            if (target?.classList.contains('product-card__button')) {
+                const productId = getProductId(e);
+                const currentProduct = products[productId];
+                if (typeof productId === 'number') {
+                    if (target?.classList.contains('add')) {
+                        if (!target?.classList.contains('remove')) {
+                            shopCart.remove(currentProduct, true);
+                        } else {
+                            shopCart.add(currentProduct);
+                        }
+                        console.log(shopCart.show());
+                        cartTotal!.textContent = `${cartSum(products, shopCart.show())}$`;
+                        cartCounter!.textContent = `${shopCart.length()}`;
+                        localStorage.setItem('cart', JSON.stringify(shopCart.show()));
+                    }
+                    if (target?.classList.contains('info')) {
+                        window.location.href = `/product/${productId}`;
+                    }
                 }
             }
-            console.log(shopCart.show());
-            cartTotal!.textContent = `${cartSum(products, shopCart.show())}$`;
-            cartCounter!.textContent = `${shopCart.length()}`;
-            localStorage.setItem('cart', JSON.stringify(shopCart.show()));
         });
     }
 }

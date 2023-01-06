@@ -24,9 +24,12 @@ export function generateCard(card: ProductCard) {
                 <span class="product-card__category">${card.product.category}</span>
                 <span class="product-card__brand">${card.product.brand}</span>
                 <span class="product-card__rating">Rating: <b>${card.product.rating}</b></span>
-                <button class="product-card__button" data-productId="${card.product.id}">
-                    ${inCart ? 'Remove' : 'Add'}
-                </button>
+                <div class="product-card__buttons">
+                    <button class="product-card__button add" data-productId="${card.product.id}">
+                        ${inCart ? 'Remove' : 'Add'}
+                    </button>
+                    <button class="product-card__button info" data-productId="${card.product.id}">Info</button>
+                </div>
             </div>
         </li>
         `;
@@ -38,7 +41,7 @@ export function mount(parent: Element, card: ProductCard): void {
 }
 
 export async function loadProducts() {
-    const res = await fetch(`data/products.json`);
+    const res = await fetch(`../data/products.json`);
     const data = (await res.json()) as LoaderOption;
     return data.products;
 }
