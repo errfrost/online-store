@@ -85,5 +85,11 @@ export class ProductPage extends AbstractView {
         (document.querySelector('.desc-brand') as HTMLDivElement).innerHTML = card.product.brand;
         (document.querySelector('.desc-category') as HTMLDivElement).innerHTML = card.product.category;
         (document.querySelector('.desc-price') as HTMLDivElement).innerHTML = card.product.price.toString() + '$';
+
+        const shopCart = new Cart();
+        const cartCounter = document.querySelector('.cart-counter');
+        const cartTotal = document.querySelector('.cart-total__price');        
+        cartTotal!.textContent = `${cartSum(products, shopCart.show())}$`; ///Нужно как-то иначе сделать чтобы не дублировалось  думаю кака то функця обновлния днных
+        cartCounter!.textContent = `${shopCart.length()}`;
     }
 }

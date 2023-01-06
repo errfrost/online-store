@@ -10,10 +10,6 @@ import { restoreFiltersFromQS, saveFiltersToQS } from '../helpers/querystring';
 import { Cart } from '../service/Cart';
 import { cartSum } from '../helpers/addProduct';
 
-const shopCart = new Cart();
-const cartCounter = document.querySelector('.cart-counter');
-const cartTotal = document.querySelector('.cart-total__price');
-
 export class Home extends AbstractView {
     constructor(params: QueryStringParams) {
         super(params);
@@ -233,6 +229,9 @@ export class Home extends AbstractView {
         this.changeView();
         this.bindListeners();
 
+        const shopCart = new Cart();
+        const cartCounter = document.querySelector('.cart-counter');
+        const cartTotal = document.querySelector('.cart-total__price');
         cartTotal!.textContent = `${cartSum(products, shopCart.show())}$`; ///Нужно как-то иначе сделать чтобы не дублировалось  думаю кака то функця обновлния днных
         cartCounter!.textContent = `${shopCart.length()}`;
 
