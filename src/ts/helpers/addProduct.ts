@@ -27,3 +27,10 @@ export function cartSum(productList: IProducts, cartList: IcartItem[]) {
     }
     return total.toFixed(2);
 }
+
+export function isProductInCart(productID: number, cartList: IcartItem[]) {
+    for (let key of cartList) {
+        if (key.id === productID) return true;
+    }
+    return false;
+}
