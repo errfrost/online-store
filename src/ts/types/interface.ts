@@ -37,6 +37,13 @@ export interface LoaderOption {
     [key: string]: IProductCard[];
 }
 
+export interface Promocodes {
+    id: number;
+    description: string;
+    code: string;
+    discountPercentage: number;
+}
+
 export interface IcartItem {
     id: number;
     count: number;

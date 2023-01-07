@@ -151,6 +151,24 @@
     flex-grow: 1;
     background-color: $dark_gray;
     border-radius: 5px;
+
+    &__promocodes {
+        padding: 5px;
+        border-radius: 5px;
+        background-color: #fff;
+        margin-bottom: 10px;
+        &-title {
+            text-align: center;
+            border-bottom: 1px solid #000;
+        }
+        &-item {
+            background-color: $green;
+            color: #fff;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+    }
     &__topbar {
         background-color: $green;
         color: #fff;
@@ -179,6 +197,10 @@
         &-counter,
         &-price {
             color: $red;
+            span {
+                text-decoration: line-through;
+                color: #000;
+            }
         }
         &-promocode {
             border: none;
