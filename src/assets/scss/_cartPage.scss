@@ -197,6 +197,10 @@
         &-counter,
         &-price {
             color: $red;
+            span {
+                text-decoration: line-through;
+                color: #000;
+            }
         }
         &-promocode {
             border: none;

@@ -54,6 +54,7 @@ export class CartPage extends AbstractView {
                     </div>
                 </div>
                 <input class="summary__products-promocode" type="search" placeholder="Enter promo code">
+                <div class="summary__products-promocode-notice"></div>
                 <button class="buy-btn">Buy now</button>
             </div>
         </div>
@@ -67,16 +68,14 @@ export class CartPage extends AbstractView {
         const cartList = document.querySelector('.cart__list');
         const summaryCounter = document.querySelector('.summary__products-counter');
         const summaryPrice = document.querySelector('.summary__products-price');
-        const promocodeInput = document.querySelector('.summary__products-promocode');
+        const promocodeInput = document.querySelector('.summary__products-promocode') as HTMLInputElement;
+        const noticeWrap = document.querySelector('.summary__products-promocode-notice');
         const promocodeBlock = document.querySelector('.summary__promocodes');
         const promocodeBlockList = document.querySelector('.summary__promocodes-list');
         const activePromocodes: Promocodes[] = JSON.parse(localStorage.getItem('promo')!) || [];
         const shopCart = new Cart();
         cartTotal!.textContent = `${cartSum(products, shopCart.show())}$`;
-        summaryPrice!.textContent = `${(
-            +cartSum(products, shopCart.show()) -
-            +cartSum(products, shopCart.show()) * (getPromoDiscount(activePromocodes) / 100)
-        ).toFixed(2)}$`;
+        changeSum();
         ///Нужно как-то иначе сделать чтобы не дублировалось  думаю кака то функця обновлния днных
         cartCounter!.textContent = `${shopCart.length()}`;
         summaryCounter!.textContent = `${shopCart.length()}`;
@@ -113,24 +112,22 @@ export class CartPage extends AbstractView {
             ///Нужно как-то иначе сделать чтобы не дублировалось  думаю кака то функця обновлния днных
             cartCounter!.textContent = `${shopCart.length()}`;
             summaryCounter!.textContent = `${shopCart.length()}`;
-            summaryPrice!.textContent = `${(
-                +cartSum(products, shopCart.show()) -
-                +cartSum(products, shopCart.show()) * (getPromoDiscount(activePromocodes) / 100)
-            ).toFixed(2)}$`;
+            changeSum();
             localStorage.setItem('cart', JSON.stringify(shopCart.show()));
         });
-        promocodeInput!.addEventListener('search', async (event) => {
+        promocodeInput!.addEventListener('input', async (event) => {
+            noticeWrap!.innerHTML = '';
             let target = event.target as HTMLInputElement;
-            let isPromocode = await getPromocode(target.value, activePromocodes);
+            let isPromocode = (await getPromocode(target.value, activePromocodes)) as unknown as Promocodes;
             if (isPromocode) {
-                activePromocodes.push(isPromocode);
-                promocodeBlockList!.innerHTML = '';
-                generatePromoItem(activePromocodes, promocodeBlockList as HTMLElement);
+                const notice = `<div class="summary__promocodes-item" data-promoid="${isPromocode.id}">${isPromocode.description} 
+                ${isPromocode.discountPercentage}%<button data-code="${isPromocode.code}">ADD</button></div>`;
+                noticeWrap!.insertAdjacentHTML('beforeend', notice);
+                // activePromocodes.push(isPromocode);
+                // promocodeBlockList!.innerHTML = '';
+                // generatePromoItem(activePromocodes, promocodeBlockList as HTMLElement);
             }
-            summaryPrice!.textContent = `${(
-                +cartSum(products, shopCart.show()) -
-                +cartSum(products, shopCart.show()) * (getPromoDiscount(activePromocodes) / 100)
-            ).toFixed(2)}$`;
+            changeSum();
         });
         generatePromoItem(activePromocodes, promocodeBlockList as HTMLElement);
         promocodeBlock!.addEventListener('click', (event) => {
@@ -140,10 +137,34 @@ export class CartPage extends AbstractView {
                 removePromo(activePromocodes, Number(promoItem.dataset.promoid));
                 promoItem.remove();
             }
-            summaryPrice!.textContent = `${(
-                +cartSum(products, shopCart.show()) -
-                +cartSum(products, shopCart.show()) * (getPromoDiscount(activePromocodes) / 100)
-            ).toFixed(2)}$`;
+            changeSum();
         });
+        noticeWrap!.addEventListener('click', async (event) => {
+            const target = event.target as HTMLElement;
+            if (target instanceof HTMLButtonElement) {
+                const promoItem = target.parentElement!;
+                let isPromocode = (await getPromocode(target.dataset.code as string, activePromocodes)) as unknown as Promocodes;
+                activePromocodes.push(isPromocode);
+                promocodeBlockList!.innerHTML = '';
+                promocodeInput!.value = '';
+                generatePromoItem(activePromocodes, promocodeBlockList as HTMLElement);
+                promoItem.remove();
+                changeSum();
+            }
+        });
+        function changeSum() {
+            summaryPrice!.textContent = `${(+cartSum(products, shopCart.show())).toFixed(2)}$`;
+            // summaryPrice!.nextSibling!.remove();
+            console.log(activePromocodes.length);
+            if (activePromocodes.length > 0) {
+                summaryPrice!.innerHTML = `<span>${(+cartSum(products, shopCart.show())).toFixed(2)}$</span>
+                
+                    ${(
+                        +cartSum(products, shopCart.show()) -
+                        +cartSum(products, shopCart.show()) * (getPromoDiscount(activePromocodes) / 100)
+                    ).toFixed(2)}$
+                `;
+            }
+        }
     }
 }
