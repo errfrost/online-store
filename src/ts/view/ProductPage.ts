@@ -1,11 +1,9 @@
 import { AbstractView } from './AbstractView';
 import { QueryStringParams } from '../types/type';
 import { Cart } from '../service/Cart';
-import { generateCard, loadProducts } from '../helpers/generate-cards';
+import { loadProducts } from '../helpers/generate-cards';
 import { IProducts } from '../types/interface';
-import { cartSum } from '../helpers/addProduct';
-import { generateCartItem } from '../helpers/generateCartItem';
-import { getProductId } from '../helpers/addProduct';
+import { cartSum, isProductInCart } from '../helpers/addProduct';
 import { ProductCard } from '../service/StoreService';
 
 export class ProductPage extends AbstractView {
@@ -70,7 +68,7 @@ export class ProductPage extends AbstractView {
             img.width = 150;
             img.height = 150;
             img.src = element;
-            img.className = "thumbnails";
+            img.className = 'thumbnails';
             thumbnails.append(img);
             img.addEventListener('click', (e) => {
                 (document.querySelector('.product-image img') as HTMLImageElement).src = (e.target as HTMLImageElement).src;
@@ -88,8 +86,31 @@ export class ProductPage extends AbstractView {
 
         const shopCart = new Cart();
         const cartCounter = document.querySelector('.cart-counter');
-        const cartTotal = document.querySelector('.cart-total__price');        
+        const cartTotal = document.querySelector('.cart-total__price');
         cartTotal!.textContent = `${cartSum(products, shopCart.show())}$`; ///Нужно как-то иначе сделать чтобы не дублировалось  думаю кака то функця обновлния днных
         cartCounter!.textContent = `${shopCart.length()}`;
+
+        if (isProductInCart(this.productID, shopCart.show())) {
+            (document.querySelector('.buy-cart') as HTMLButtonElement).innerHTML = 'Remove';
+            (document.querySelector('.buy-cart') as HTMLButtonElement).classList.add('remove');
+        } else {
+            (document.querySelector('.buy-cart') as HTMLButtonElement).innerHTML = 'Add To Cart';
+        }
+
+        document.querySelector('.buy-cart')?.addEventListener('click', (e) => {
+            const currentProduct = products[this.productID];
+            const addButton = e.target as HTMLButtonElement;
+            if (addButton.classList.contains('remove')) {
+                shopCart.remove(currentProduct, true);
+                addButton.textContent = 'Add to Cart';
+            } else {
+                shopCart.add(currentProduct);
+                addButton.textContent = 'Remove';
+            }
+            addButton.classList.toggle('remove');
+            cartTotal!.textContent = `${cartSum(products, shopCart.show())}$`;
+            cartCounter!.textContent = `${shopCart.length()}`;
+            localStorage.setItem('cart', JSON.stringify(shopCart.show()));
+        });
     }
 }
