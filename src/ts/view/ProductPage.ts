@@ -12,7 +12,9 @@ export class ProductPage extends AbstractView {
     constructor(params: QueryStringParams) {
         super(params);
         this.setTitle('Product Details');
+        if (isNaN(Number(this.params.type))) window.location.href = '/404';
         this.productID = Number(this.params.type);
+        if (this.productID < 0 || this.productID > 100) window.location.href = '/404';
     }
 
     async getHtml() {
