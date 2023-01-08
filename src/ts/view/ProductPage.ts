@@ -12,7 +12,9 @@ export class ProductPage extends AbstractView {
     constructor(params: QueryStringParams) {
         super(params);
         this.setTitle('Product Details');
+        if (isNaN(Number(this.params.type))) window.location.href = '/404';
         this.productID = Number(this.params.type);
+        if (this.productID < 0 || this.productID > 100) window.location.href = '/404';
     }
 
     async getHtml() {
@@ -111,6 +113,15 @@ export class ProductPage extends AbstractView {
             cartTotal!.textContent = `${cartSum(products, shopCart.show())}$`;
             cartCounter!.textContent = `${shopCart.length()}`;
             localStorage.setItem('cart', JSON.stringify(shopCart.show()));
+        });
+        document.querySelector('.buy-now')?.addEventListener('click', (e) => {
+            const currentProduct = products[this.productID];
+            const addButton = document.querySelector('.buy-cart') as HTMLButtonElement;
+            if (!addButton.classList.contains('remove')) {
+                shopCart.add(currentProduct);
+            }
+            localStorage.setItem('cart', JSON.stringify(shopCart.show()));
+            window.location.href = '/cart?modal=true';
         });
     }
 }

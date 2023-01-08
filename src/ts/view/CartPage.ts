@@ -6,6 +6,7 @@ import { IProducts, Promocodes } from '../types/interface';
 import { cartSum } from '../helpers/addProduct';
 import { generateCartItem } from '../helpers/generateCartItem';
 import { getPromocode, generatePromoItem, removePromo, getPromoDiscount } from '../helpers/promocode';
+import { openModal, closeModal } from '../helpers/modal';
 
 export class CartPage extends AbstractView {
     constructor(params: QueryStringParams) {
@@ -58,6 +59,8 @@ export class CartPage extends AbstractView {
                 <button class="buy-btn">Buy now</button>
             </div>
         </div>
+
+        <div id="myModal" class="modal"></div>
       </section>
     `;
     }
@@ -152,6 +155,21 @@ export class CartPage extends AbstractView {
                 changeSum();
             }
         });
+        document.querySelector('.buy-btn')?.addEventListener('click', (e) => {
+            openModal();
+        });
+        document.addEventListener('click', (e) => {
+            const modal = document.querySelector('.modal') as HTMLDivElement;
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        //open window with modal if redirect from ProductPage
+        let getParams = new URL(window.location.href).searchParams;
+        let modalParam = getParams.has('modal') ? getParams.get('modal') : '';
+        if (modalParam !== '') openModal();
+
         function changeSum() {
             summaryPrice!.textContent = `${(+cartSum(products, shopCart.show())).toFixed(2)}$`;
             // summaryPrice!.nextSibling!.remove();
