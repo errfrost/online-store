@@ -202,7 +202,7 @@ export function openModal() {
               </div>
           </form>
       </div>
-      <div class="modal-footer">
+      <div class="modal-footer" style="display:none;">
           <h3>Thanks for shopping!</h3>
       </div>
     `;
@@ -218,40 +218,63 @@ export function openModal() {
 
     document.querySelector('.modal-form')?.addEventListener('submit', (e) => {
         e.preventDefault();
+        let res = true;
+
         if (!isNameOk((document.querySelector('.modal-name') as HTMLInputElement).value)) {
             (document.querySelector('.modal-name') as HTMLInputElement).style.backgroundColor = '#ee7777';
+            res = false;
         } else {
             (document.querySelector('.modal-name') as HTMLInputElement).style.backgroundColor = '#ffffff';
         }
+
         if (!isPhoneOk((document.querySelector('.modal-tel') as HTMLInputElement).value)) {
             (document.querySelector('.modal-tel') as HTMLInputElement).style.backgroundColor = '#ee7777';
+            res = false;
         } else {
             (document.querySelector('.modal-tel') as HTMLInputElement).style.backgroundColor = '#ffffff';
         }
+
         if (!isAddressOk((document.querySelector('.modal-address') as HTMLInputElement).value)) {
             (document.querySelector('.modal-address') as HTMLInputElement).style.backgroundColor = '#ee7777';
+            res = false;
         } else {
             (document.querySelector('.modal-address') as HTMLInputElement).style.backgroundColor = '#ffffff';
         }
+
         if (!isEmailOk((document.querySelector('.modal-email') as HTMLInputElement).value)) {
             (document.querySelector('.modal-email') as HTMLInputElement).style.backgroundColor = '#ee7777';
+            res = false;
         } else {
             (document.querySelector('.modal-email') as HTMLInputElement).style.backgroundColor = '#ffffff';
         }
+
         if (!isCreditNumberOk((document.querySelector('.cc-number-input') as HTMLInputElement).value)) {
             (document.querySelector('.cc-number-input') as HTMLInputElement).style.backgroundColor = '#ee7777';
+            res = false;
         } else {
             (document.querySelector('.cc-number-input') as HTMLInputElement).style.backgroundColor = '#ffffff';
         }
+
         if (!isExpiryOk((document.querySelector('.cc-expiry-input') as HTMLInputElement).value)) {
             (document.querySelector('.cc-expiry-input') as HTMLInputElement).style.backgroundColor = '#ee7777';
+            res = false;
         } else {
             (document.querySelector('.cc-expiry-input') as HTMLInputElement).style.backgroundColor = '#ffffff';
         }
+
         if (!isCVCOk((document.querySelector('.cc-cvc-input') as HTMLInputElement).value)) {
             (document.querySelector('.cc-cvc-input') as HTMLInputElement).style.backgroundColor = '#ee7777';
+            res = false;
         } else {
             (document.querySelector('.cc-cvc-input') as HTMLInputElement).style.backgroundColor = '#ffffff';
+        }
+
+        if (res) {
+            (document.querySelector('.modal-footer') as HTMLDivElement).style.display = 'flex';
+            localStorage.setItem('cart', '[]');
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 5000);
         }
     });
 }
