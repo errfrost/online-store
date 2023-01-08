@@ -164,6 +164,12 @@ export class CartPage extends AbstractView {
                 closeModal();
             }
         });
+
+        //open window with modal if redirect from ProductPage
+        let getParams = new URL(window.location.href).searchParams;
+        let modalParam = getParams.has('modal') ? getParams.get('modal') : '';
+        if (modalParam !== '') openModal();
+
         function changeSum() {
             summaryPrice!.textContent = `${(+cartSum(products, shopCart.show())).toFixed(2)}$`;
             // summaryPrice!.nextSibling!.remove();

@@ -114,5 +114,14 @@ export class ProductPage extends AbstractView {
             cartCounter!.textContent = `${shopCart.length()}`;
             localStorage.setItem('cart', JSON.stringify(shopCart.show()));
         });
+        document.querySelector('.buy-now')?.addEventListener('click', (e) => {
+            const currentProduct = products[this.productID];
+            const addButton = document.querySelector('.buy-cart') as HTMLButtonElement;
+            if (!addButton.classList.contains('remove')) {
+                shopCart.add(currentProduct);
+            }
+            localStorage.setItem('cart', JSON.stringify(shopCart.show()));
+            window.location.href = '/cart?modal=true';
+        });
     }
 }
