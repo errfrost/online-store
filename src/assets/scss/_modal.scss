@@ -15,11 +15,11 @@
 /* Modal Content */
 .modal-content {
     position: relative;
-    background-color: #fefefe;
+    background-color: $gray;
     margin: auto;
     padding: 0;
     border: 1px solid #888;
-    width: 80%;
+    width: 500px;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     -webkit-animation-name: animatetop;
     -webkit-animation-duration: 0.4s;
@@ -66,17 +66,35 @@
 }
 
 .modal-header {
-    padding: 2px 16px;
-    background-color: #5cb85c;
+    padding: 10px 16px;
+    background-color: $green;
     color: white;
 }
 
 .modal-body {
-    padding: 2px 16px;
+    padding: 20px 20px;
 }
 
 .modal-footer {
-    padding: 2px 16px;
-    background-color: #5cb85c;
+    padding: 10px 16px;
+    background-color: $green;
     color: white;
+    display: flex;
+    justify-content: center;
+}
+
+.modal-input {
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    margin-bottom: 15px;
+}
+
+.confirm-button {
+    font-weight: 700;
+    width: 137px;
+    border: none;
+    padding: 13px 0;
+    border-radius: 5px;
+    background-color: $dark_gray;
 }
