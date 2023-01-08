@@ -48,3 +48,7 @@ export interface IcartItem {
     id: number;
     count: number;
 }
+
+export interface IcartItemArray {
+    [key: number]: IcartItem;
+}

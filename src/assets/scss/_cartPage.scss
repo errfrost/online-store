@@ -50,6 +50,7 @@
         width: 36px;
         @extend %buton_style;
         height: 36px;
+        cursor: pointer;
         &_prev {
             margin-left: 15px;
         }
@@ -59,6 +60,7 @@
         display: flex;
         align-items: center;
         &-page {
+            text-align: center;
             @extend %buton_style;
             margin: 0 5px;
         }
