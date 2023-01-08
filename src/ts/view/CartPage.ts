@@ -126,9 +126,6 @@ export class CartPage extends AbstractView {
                 const notice = `<div class="summary__promocodes-item" data-promoid="${isPromocode.id}">${isPromocode.description} 
                 ${isPromocode.discountPercentage}%<button data-code="${isPromocode.code}">ADD</button></div>`;
                 noticeWrap!.insertAdjacentHTML('beforeend', notice);
-                // activePromocodes.push(isPromocode);
-                // promocodeBlockList!.innerHTML = '';
-                // generatePromoItem(activePromocodes, promocodeBlockList as HTMLElement);
             }
             changeSum();
         });
@@ -172,8 +169,6 @@ export class CartPage extends AbstractView {
 
         function changeSum() {
             summaryPrice!.textContent = `${(+cartSum(products, shopCart.show())).toFixed(2)}$`;
-            // summaryPrice!.nextSibling!.remove();
-            console.log(activePromocodes.length);
             if (activePromocodes.length > 0) {
                 summaryPrice!.innerHTML = `<span>${(+cartSum(products, shopCart.show())).toFixed(2)}$</span>
                 
