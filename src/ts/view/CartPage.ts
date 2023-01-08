@@ -23,7 +23,7 @@ export class CartPage extends AbstractView {
                 <span class="cart__title">PRODUCTS IN CART</span>
                 <span class="cart__items">
                     ITEMS:
-                    <b class="cart__items-counter">3</b>
+                    <input type="number" min="1"  value="3" class="cart__items-counter">
                 </span>
                 <span class="cart__paginator">
                     PAGE:
@@ -75,6 +75,7 @@ export class CartPage extends AbstractView {
         const noticeWrap = document.querySelector('.summary__products-promocode-notice');
         const promocodeBlock = document.querySelector('.summary__promocodes');
         const promocodeBlockList = document.querySelector('.summary__promocodes-list');
+        const productsOnPage = document.querySelector('.cart__items-counter') as HTMLInputElement;
         const activePromocodes: Promocodes[] = JSON.parse(localStorage.getItem('promo')!) || [];
         const shopCart = new Cart();
         cartTotal!.textContent = `${cartSum(products, shopCart.show())}$`;
@@ -86,8 +87,9 @@ export class CartPage extends AbstractView {
             const item = generateCartItem(products[key.id], key.count);
             cartList!.insertAdjacentHTML('beforeend', item);
         }
-
+        productsOnPage!.max = String(shopCart.unicItems());
         document.addEventListener('click', (event) => {
+            productsOnPage!.max = String(shopCart.unicItems());
             const target = event.target;
             if (target instanceof Element && target.classList.contains('button')) {
                 if (target.parentElement?.classList.contains('stock-buttons-wrapper')) {
@@ -105,7 +107,6 @@ export class CartPage extends AbstractView {
                     }
                 }
             }
-
             cartList!.innerHTML = '';
             for (let key of shopCart.show()) {
                 const item = generateCartItem(products[key.id], key.count);

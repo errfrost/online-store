@@ -40,6 +40,7 @@
         align-items: center;
         margin-left: auto;
         &-counter {
+            text-align: center;
             @extend %buton_style;
             margin-left: 20px;
             margin-right: 36px;

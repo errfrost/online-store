@@ -42,4 +42,7 @@ export class Cart {
     length() {
         return this.cartList.reduce((acc, item) => acc + item.count, 0);
     }
+    unicItems() {
+        return this.cartList.length;
+    }
 }
