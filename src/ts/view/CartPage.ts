@@ -23,12 +23,12 @@ export class CartPage extends AbstractView {
                 <span class="cart__title">PRODUCTS IN CART</span>
                 <span class="cart__items">
                     ITEMS:
-                    <input type="number" min="1"   class="cart__items-counter">
+                    <input type="number" min="1" value="3" class="cart__items-counter">
                 </span>
                 <span class="cart__paginator">
                     PAGE:
                     <button class="button button_prev"><</button>
-                    <input type="number" min="1" value="1" class="cart__paginator-page">
+                    <input type="number" min="1" value="1" class="cart__paginator-page" readonly>
                     <button class="button button_next">></button>
                 </span>
             </div>
@@ -67,9 +67,6 @@ export class CartPage extends AbstractView {
     async mounted() {
         const products = (await loadProducts()) as unknown as IProducts;
         const cartCounter = document.querySelector('.cart-counter');
-        const currentPage = document.querySelector('.cart__paginator-page') as HTMLInputElement;
-        const pagePrev = document.querySelector('.button_prev');
-        const pageNext = document.querySelector('.button_next');
         const cartTotal = document.querySelector('.cart-total__price');
         const cartList = document.querySelector('.cart__list');
         const summaryCounter = document.querySelector('.summary__products-counter');
@@ -78,27 +75,34 @@ export class CartPage extends AbstractView {
         const noticeWrap = document.querySelector('.summary__products-promocode-notice');
         const promocodeBlock = document.querySelector('.summary__promocodes');
         const promocodeBlockList = document.querySelector('.summary__promocodes-list');
-        const productsOnPageCounter = document.querySelector('.cart__items-counter') as HTMLInputElement;
+
         const activePromocodes: Promocodes[] = JSON.parse(localStorage.getItem('promo')!) || [];
         const shopCart = new Cart();
-        let productsOnPage: number = Number(productsOnPageCounter.value);
+
+        // <pagination
+        const currentPage = document.querySelector('.cart__paginator-page') as HTMLInputElement;
+        const pagePrev = document.querySelector('.button_prev');
+        const pageNext = document.querySelector('.button_next');
+        const productsOnPageCounter = document.querySelector('.cart__items-counter') as HTMLInputElement;
+
         currentPage.value = localStorage.getItem('currentPage') || '1';
         productsOnPageCounter.value = localStorage.getItem('productsOnPageCounter') || '3';
+
         var ClickEvent = new Event('click');
         productsOnPageCounter.addEventListener('input', () => {
-            productsOnPage = Number(productsOnPageCounter.value);
             localStorage.setItem('productsOnPageCounter', productsOnPageCounter.value);
             currentPage!.max = String(Math.ceil(shopCart.unicItems() / Number(productsOnPageCounter.value)));
             document.dispatchEvent(ClickEvent);
         });
-        const countPages = Math.ceil(shopCart.show().length / Number(productsOnPageCounter.value));
+
         pageNext?.addEventListener('click', () => {
+            const countPages = Math.ceil(shopCart.unicItems() / Number(productsOnPageCounter.value));
             if (+currentPage.value === countPages) {
                 return;
             }
             currentPage.value = (+currentPage.value + 1).toString();
             window.location.href = `/cart?pageNum=${currentPage.value}`;
-            localStorage.setItem('currentPage', currentPage.value);
+            localStorage.setItem('currentPage', currentPage.value); //
             document.dispatchEvent(ClickEvent);
         });
         pagePrev?.addEventListener('click', () => {
@@ -110,6 +114,7 @@ export class CartPage extends AbstractView {
             localStorage.setItem('currentPage', currentPage.value);
             document.dispatchEvent(ClickEvent);
         });
+        // /pagination>
 
         cartTotal!.textContent = `${cartSum(products, shopCart.show())}$`;
         changeSum();
@@ -125,14 +130,15 @@ export class CartPage extends AbstractView {
         if (pageParam !== '') {
             const cartProducts = shopCart.show().slice(0);
             const currentPage: number = Number(pageParam);
-
             const pagItems = [];
-            for (let i = 0; i <= cartProducts.length; i++) {
-                pagItems.push(cartProducts.splice(0, productsOnPage));
-            }
-
+            do {
+                pagItems.push(cartProducts.splice(0, Number(productsOnPageCounter.value)));
+            } while (cartProducts.length > 0 && productsOnPageCounter.value !== '');
+            
+            let productNumber = (currentPage - 1) * Number(productsOnPageCounter.value) + 1;
             for (let key of pagItems[currentPage - 1]) {
-                const item = generateCartItem(products[key.id], key.count);
+                const item = generateCartItem(products[key.id], key.count, productNumber);
+                productNumber += 1;
                 cartList!.insertAdjacentHTML('beforeend', item);
             }
         } else {
@@ -168,14 +174,15 @@ export class CartPage extends AbstractView {
             if (pageParam !== '') {
                 const cartProducts = shopCart.show().slice(0);
                 const currentPage: number = Number(pageParam);
-
                 const pagItems = [];
-                for (let i = 0; i <= cartProducts.length; i++) {
-                    pagItems.push(cartProducts.splice(0, productsOnPage));
-                }
-
+                do {
+                    pagItems.push(cartProducts.splice(0, Number(productsOnPageCounter.value)));
+                } while (cartProducts.length > 0 && productsOnPageCounter.value !== '');
+                
+                let productNumber = (currentPage - 1) * Number(productsOnPageCounter.value) + 1;
                 for (let key of pagItems[currentPage - 1]) {
-                    const item = generateCartItem(products[key.id], key.count);
+                    const item = generateCartItem(products[key.id], key.count, productNumber);
+                    productNumber += 1;
                     cartList!.insertAdjacentHTML('beforeend', item);
                 }
             } else {
