@@ -9,7 +9,10 @@ export class Page404 extends AbstractView {
 
     async getHtml() {
         return `
-      <h1>404 - Page not found</h1>
+      <h1 class="main-title visually-hidden">404 - Page not found</h1>
+      <div class="not-found">
+          <img src="../assets/icons/not-found.png" alt="404 error" width="659">
+      </div>
     `;
     }
     async mounted() {}

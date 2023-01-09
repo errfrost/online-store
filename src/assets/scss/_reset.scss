@@ -41,6 +41,12 @@ h5 {
     overflow: hidden;
 }
 
+.not-found {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 input,
 input:hover,
 input:focus {
