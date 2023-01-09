@@ -134,7 +134,7 @@ export class CartPage extends AbstractView {
             do {
                 pagItems.push(cartProducts.splice(0, Number(productsOnPageCounter.value)));
             } while (cartProducts.length > 0 && productsOnPageCounter.value !== '');
-            
+
             let productNumber = (currentPage - 1) * Number(productsOnPageCounter.value) + 1;
             for (let key of pagItems[currentPage - 1]) {
                 const item = generateCartItem(products[key.id], key.count, productNumber);
@@ -178,7 +178,7 @@ export class CartPage extends AbstractView {
                 do {
                     pagItems.push(cartProducts.splice(0, Number(productsOnPageCounter.value)));
                 } while (cartProducts.length > 0 && productsOnPageCounter.value !== '');
-                
+
                 let productNumber = (currentPage - 1) * Number(productsOnPageCounter.value) + 1;
                 for (let key of pagItems[currentPage - 1]) {
                     const item = generateCartItem(products[key.id], key.count, productNumber);
