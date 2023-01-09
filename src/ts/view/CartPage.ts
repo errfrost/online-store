@@ -55,6 +55,7 @@ export class CartPage extends AbstractView {
                     </div>
                 </div>
                 <input class="summary__products-promocode" type="search" placeholder="Enter promo code">
+                <span>Example: rs or 2023</span>
                 <div class="summary__products-promocode-notice"></div>
                 <button class="buy-btn">Buy now</button>
             </div>
