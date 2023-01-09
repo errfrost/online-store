@@ -2,7 +2,9 @@ import { IProductCard, IProducts, IcartItem } from '../types/interface';
 export function getProductId(event: Event): number | string {
     const target = event.target;
     if (target instanceof HTMLElement && target.hasAttribute('data-productid')) {
-        addClassToCard(target);
+        if (!target.classList.contains('info')) {
+            addClassToCard(target);
+        }
         return Number(target.getAttribute('data-productid'));
     }
     return 'Product not found';
