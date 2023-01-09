@@ -129,6 +129,14 @@
     justify-content: center;
 }
 
+.errors {
+  display: flex;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: bold;
+  color: $red;
+}
+
 .cc-wrapper {
     margin: 0px auto;
     width: 370px;

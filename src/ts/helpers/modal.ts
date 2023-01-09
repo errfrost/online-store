@@ -200,6 +200,7 @@ export function openModal() {
               <div class="confirm">
                   <input class="confirm-button" type="submit" value="Confirm">
               </div>
+              <div class="errors">Errors in selected fields!</div>
           </form>
       </div>
       <div class="modal-footer" style="display:none;">
@@ -213,6 +214,8 @@ export function openModal() {
     element.innerHTML = modalContent;
     modal.append(element);
     modal.style.display = 'block';
+    const modalError = document.querySelector('.errors') as HTMLDivElement;
+    modalError.style.display = 'none';
 
     ccWorker();
 
@@ -270,11 +273,14 @@ export function openModal() {
         }
 
         if (res) {
+            modalError.style.display = 'none';
             (document.querySelector('.modal-footer') as HTMLDivElement).style.display = 'flex';
-            localStorage.setItem('cart', '[]');
+            localStorage.clear();
             setTimeout(() => {
                 window.location.href = '/';
             }, 5000);
+        } else {
+            modalError.style.display = 'flex';
         }
     });
 }
