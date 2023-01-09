@@ -227,3 +227,13 @@
         }
     }
 }
+
+.empty-message {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    font-weight: bold;
+    color: $red;
+    margin: 89px;
+}
