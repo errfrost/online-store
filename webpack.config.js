@@ -5,6 +5,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 
 const srcPath = path.resolve(__dirname, 'src');
+const { NetlifyPlugin } = require('netlify-webpack-plugin');
 
 const devServer = (isDev) =>
     !isDev
@@ -78,6 +79,15 @@ module.exports = ({ development }) => ({
         minimize: true,
     },
     plugins: [
+        new NetlifyPlugin({
+            redirects: [
+                {
+                    from: '/*',
+                    to: '/index.html',
+                    status: 200,
+                },
+            ],
+        }),
         new MiniCssExtractPlugin({
             filename: '[name].[chunkhash].css',
             chunkFilename: '[name].[chunkhash].js',
