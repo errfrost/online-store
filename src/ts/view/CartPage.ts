@@ -90,29 +90,41 @@ export class CartPage extends AbstractView {
 
         var ClickEvent = new Event('click');
         productsOnPageCounter.addEventListener('input', () => {
-            localStorage.setItem('productsOnPageCounter', productsOnPageCounter.value);
+            if (productsOnPageCounter.value === '0' || productsOnPageCounter.value === '') return;
+            localStorage.setItem('productsOnPageCounter', (+productsOnPageCounter.value).toString());
             currentPage!.max = String(Math.ceil(shopCart.unicItems() / Number(productsOnPageCounter.value)));
-            document.dispatchEvent(ClickEvent);
+            currentPage.value = '1';
+            localStorage.setItem('currentPage', currentPage.value);
+            window.location.href = `/cart?pageNum=${currentPage.value}`;
+            //document.dispatchEvent(ClickEvent);
         });
 
         pageNext?.addEventListener('click', () => {
+            if (productsOnPageCounter.value === '0' || productsOnPageCounter.value === '') {
+                productsOnPageCounter.value = '1';
+                localStorage.setItem('productsOnPageCounter', '1');
+            }
             const countPages = Math.ceil(shopCart.unicItems() / Number(productsOnPageCounter.value));
             if (+currentPage.value === countPages) {
                 return;
             }
             currentPage.value = (+currentPage.value + 1).toString();
+            localStorage.setItem('currentPage', currentPage.value);
             window.location.href = `/cart?pageNum=${currentPage.value}`;
-            localStorage.setItem('currentPage', currentPage.value); //
-            document.dispatchEvent(ClickEvent);
+            //document.dispatchEvent(ClickEvent);
         });
         pagePrev?.addEventListener('click', () => {
+            if (productsOnPageCounter.value === '0' || productsOnPageCounter.value === '') {
+                productsOnPageCounter.value = '1';
+                localStorage.setItem('productsOnPageCounter', '1');
+            }
             if (+currentPage.value === 1) {
                 return;
             }
             currentPage.value = (+currentPage.value - 1).toString();
-            window.location.href = `/cart?pageNum=${currentPage.value}`;
             localStorage.setItem('currentPage', currentPage.value);
-            document.dispatchEvent(ClickEvent);
+            window.location.href = `/cart?pageNum=${currentPage.value}`;
+            //document.dispatchEvent(ClickEvent);
         });
         // /pagination>
 
@@ -131,9 +143,10 @@ export class CartPage extends AbstractView {
             const cartProducts = shopCart.show().slice(0);
             const currentPage: number = Number(pageParam);
             const pagItems = [];
-            do {
+            const countPages = Math.ceil(shopCart.unicItems() / Number(productsOnPageCounter.value));
+            for (let i = 0; i < countPages; i += 1) {
                 pagItems.push(cartProducts.splice(0, Number(productsOnPageCounter.value)));
-            } while (cartProducts.length > 0 && productsOnPageCounter.value !== '');
+            }
 
             let productNumber = (currentPage - 1) * Number(productsOnPageCounter.value) + 1;
             for (let key of pagItems[currentPage - 1]) {
@@ -175,9 +188,10 @@ export class CartPage extends AbstractView {
                 const cartProducts = shopCart.show().slice(0);
                 const currentPage: number = Number(pageParam);
                 const pagItems = [];
-                do {
+                const countPages = Math.ceil(shopCart.unicItems() / Number(productsOnPageCounter.value));
+                for (let i = 0; i < countPages; i += 1) {
                     pagItems.push(cartProducts.splice(0, Number(productsOnPageCounter.value)));
-                } while (cartProducts.length > 0 && productsOnPageCounter.value !== '');
+                }
 
                 let productNumber = (currentPage - 1) * Number(productsOnPageCounter.value) + 1;
                 for (let key of pagItems[currentPage - 1]) {
