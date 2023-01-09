@@ -32,6 +32,7 @@ export class CartPage extends AbstractView {
                     <button class="button button_next">></button>
                 </span>
             </div>
+            <div class="empty-message">Cart is empty</div>
             <ol class="cart__list">
                 
             </ol>
@@ -88,7 +89,6 @@ export class CartPage extends AbstractView {
         currentPage.value = localStorage.getItem('currentPage') || '1';
         productsOnPageCounter.value = localStorage.getItem('productsOnPageCounter') || '3';
 
-        var ClickEvent = new Event('click');
         productsOnPageCounter.addEventListener('input', () => {
             if (productsOnPageCounter.value === '0' || productsOnPageCounter.value === '') return;
             localStorage.setItem('productsOnPageCounter', (+productsOnPageCounter.value).toString());
@@ -96,10 +96,10 @@ export class CartPage extends AbstractView {
             currentPage.value = '1';
             localStorage.setItem('currentPage', currentPage.value);
             window.location.href = `/cart?pageNum=${currentPage.value}`;
-            //document.dispatchEvent(ClickEvent);
         });
 
         pageNext?.addEventListener('click', () => {
+            if (shopCart.unicItems() === 0) return;
             if (productsOnPageCounter.value === '0' || productsOnPageCounter.value === '') {
                 productsOnPageCounter.value = '1';
                 localStorage.setItem('productsOnPageCounter', '1');
@@ -111,9 +111,9 @@ export class CartPage extends AbstractView {
             currentPage.value = (+currentPage.value + 1).toString();
             localStorage.setItem('currentPage', currentPage.value);
             window.location.href = `/cart?pageNum=${currentPage.value}`;
-            //document.dispatchEvent(ClickEvent);
         });
         pagePrev?.addEventListener('click', () => {
+            if (shopCart.unicItems() === 0) return;
             if (productsOnPageCounter.value === '0' || productsOnPageCounter.value === '') {
                 productsOnPageCounter.value = '1';
                 localStorage.setItem('productsOnPageCounter', '1');
@@ -124,7 +124,6 @@ export class CartPage extends AbstractView {
             currentPage.value = (+currentPage.value - 1).toString();
             localStorage.setItem('currentPage', currentPage.value);
             window.location.href = `/cart?pageNum=${currentPage.value}`;
-            //document.dispatchEvent(ClickEvent);
         });
         // /pagination>
 
@@ -148,11 +147,18 @@ export class CartPage extends AbstractView {
                 pagItems.push(cartProducts.splice(0, Number(productsOnPageCounter.value)));
             }
 
-            let productNumber = (currentPage - 1) * Number(productsOnPageCounter.value) + 1;
-            for (let key of pagItems[currentPage - 1]) {
-                const item = generateCartItem(products[key.id], key.count, productNumber);
-                productNumber += 1;
-                cartList!.insertAdjacentHTML('beforeend', item);
+            if (!pagItems[currentPage - 1] && pagItems.length > 0) {
+                let previousPage = currentPage === 1 ? 1 : currentPage - 1;
+                localStorage.setItem('currentPage', previousPage.toString());
+                window.location.href = `/cart?pageNum=${previousPage}`;
+            }
+            if (pagItems.length > 0) {
+                let productNumber = (currentPage - 1) * Number(productsOnPageCounter.value) + 1;
+                for (let key of pagItems[currentPage - 1]) {
+                    const item = generateCartItem(products[key.id], key.count, productNumber);
+                    productNumber += 1;
+                    cartList!.insertAdjacentHTML('beforeend', item);
+                }
             }
         } else {
             for (let key of shopCart.show()) {
@@ -179,6 +185,7 @@ export class CartPage extends AbstractView {
                     } else if (target.classList.contains('button_minus')) {
                         counter.textContent = (Number(counter.textContent!) - 1).toString();
                         shopCart.remove(products[cartItemId]);
+                        localStorage.setItem('cart', JSON.stringify(shopCart.show()));
                     }
                 }
             }
@@ -193,6 +200,11 @@ export class CartPage extends AbstractView {
                     pagItems.push(cartProducts.splice(0, Number(productsOnPageCounter.value)));
                 }
 
+                if (!pagItems[currentPage - 1]) {
+                    let previousPage = currentPage === 1 ? 1 : currentPage - 1;
+                    localStorage.setItem('currentPage', previousPage.toString());
+                    window.location.href = `/cart?pageNum=${previousPage}`;
+                }
                 let productNumber = (currentPage - 1) * Number(productsOnPageCounter.value) + 1;
                 for (let key of pagItems[currentPage - 1]) {
                     const item = generateCartItem(products[key.id], key.count, productNumber);
@@ -212,6 +224,7 @@ export class CartPage extends AbstractView {
             changeSum();
             localStorage.setItem('cart', JSON.stringify(shopCart.show()));
         });
+
         promocodeInput!.addEventListener('input', async (event) => {
             noticeWrap!.innerHTML = '';
             let target = event.target as HTMLInputElement;
@@ -223,6 +236,7 @@ export class CartPage extends AbstractView {
             }
             changeSum();
         });
+
         generatePromoItem(activePromocodes, promocodeBlockList as HTMLElement);
         promocodeBlock!.addEventListener('click', (event) => {
             const target = event.target as HTMLElement;
@@ -233,6 +247,7 @@ export class CartPage extends AbstractView {
             }
             changeSum();
         });
+
         noticeWrap!.addEventListener('click', async (event) => {
             const target = event.target as HTMLElement;
             if (target instanceof HTMLButtonElement) {
@@ -246,9 +261,11 @@ export class CartPage extends AbstractView {
                 changeSum();
             }
         });
+
         document.querySelector('.buy-btn')?.addEventListener('click', (e) => {
             openModal();
         });
+
         document.addEventListener('click', (e) => {
             const modal = document.querySelector('.modal') as HTMLDivElement;
             if (e.target === modal) {
@@ -267,6 +284,11 @@ export class CartPage extends AbstractView {
                     ).toFixed(2)}$
                 `;
             }
+        }
+        if (localStorage.getItem('cart')! !== '[]') {
+            (document.querySelector('.empty-message') as HTMLDivElement).style.display = 'none';
+        } else {
+            (document.querySelector('.empty-message') as HTMLDivElement).style.display = 'flex';
         }
     }
 }
