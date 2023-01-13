@@ -1,4 +1,4 @@
-function isNameOk(name: string): boolean {
+export function isNameOk(name: string): boolean {
     name = name.trim();
     const names = name.split(' ');
     if (names.length < 2) return false;
