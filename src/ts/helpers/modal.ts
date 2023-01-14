@@ -6,7 +6,7 @@ export function isNameOk(name: string): boolean {
     return true;
 }
 
-function isPhoneOk(phone: string): boolean {
+export function isPhoneOk(phone: string): boolean {
     phone = phone.trim();
     if (phone.length < 10) return false;
     if (isNaN(Number(phone.slice(1)))) return false;
