@@ -30,7 +30,11 @@ export function isEmailOk(email: string): boolean {
 }
 
 export function isExpiryOk(expiry: string): boolean {
-    if (expiry.length < 5) return false;
+    if (expiry.length !== 5) return false;
+
+    const expiryArrStr = expiry.split('/');
+    if (expiryArrStr[0].length !== 2 || expiryArrStr[1].length !== 2) return false;
+
     const expiryArr = expiry.split('/').map((i) => Number(i));
     if (expiryArr[0] > 12 || expiryArr[0] === 0) return false;
     if (expiryArr[1] < 23 || expiryArr[1] === 0) return false;
@@ -43,7 +47,7 @@ export function isCreditNumberOk(creditNumber: string): boolean {
 }
 
 export function isCVCOk(cvv: string): boolean {
-    if (cvv.length < 3) return false;
+    if (cvv.length !== 3) return false;
     return true;
 }
 
