@@ -14,7 +14,7 @@ export function isPhoneOk(phone: string): boolean {
     return true;
 }
 
-function isAddressOk(address: string): boolean {
+export function isAddressOk(address: string): boolean {
     address = address.trim();
     const adressArr = address.split(' ');
     if (adressArr.length < 3) return false;
@@ -22,14 +22,14 @@ function isAddressOk(address: string): boolean {
     return true;
 }
 
-function isEmailOk(email: string): boolean {
+export function isEmailOk(email: string): boolean {
     email = email.trim();
     const EMAIL_REGEXP = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/iu;
     if (!EMAIL_REGEXP.test(email)) return false;
     return true;
 }
 
-function isExpiryOk(expiry: string): boolean {
+export function isExpiryOk(expiry: string): boolean {
     if (expiry.length < 5) return false;
     const expiryArr = expiry.split('/').map((i) => Number(i));
     if (expiryArr[0] > 12 || expiryArr[0] === 0) return false;
@@ -37,12 +37,12 @@ function isExpiryOk(expiry: string): boolean {
     return true;
 }
 
-function isCreditNumberOk(creditNumber: string): boolean {
+export function isCreditNumberOk(creditNumber: string): boolean {
     if (creditNumber.length < 19) return false;
     return true;
 }
 
-function isCVCOk(cvv: string): boolean {
+export function isCVCOk(cvv: string): boolean {
     if (cvv.length < 3) return false;
     return true;
 }
