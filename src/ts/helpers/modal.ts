@@ -46,8 +46,8 @@ export function isCreditNumberOk(creditNumber: string): boolean {
     return true;
 }
 
-export function isCVCOk(cvv: string): boolean {
-    if (cvv.length !== 3) return false;
+export function isCVCOk<Type>(cvv: Type): boolean {
+    if ((cvv as string).length !== 3) return false;
     return true;
 }
 
@@ -269,7 +269,7 @@ export function openModal() {
             (document.querySelector('.cc-expiry-input') as HTMLInputElement).style.backgroundColor = '#ffffff';
         }
 
-        if (!isCVCOk((document.querySelector('.cc-cvc-input') as HTMLInputElement).value)) {
+        if (!isCVCOk<String>((document.querySelector('.cc-cvc-input') as HTMLInputElement).value)) {
             (document.querySelector('.cc-cvc-input') as HTMLInputElement).style.backgroundColor = '#ee7777';
             res = false;
         } else {
