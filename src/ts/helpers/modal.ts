@@ -1,4 +1,4 @@
-function isNameOk(name: string): boolean {
+export function isNameOk(name: string): boolean {
     name = name.trim();
     const names = name.split(' ');
     if (names.length < 2) return false;
@@ -6,7 +6,7 @@ function isNameOk(name: string): boolean {
     return true;
 }
 
-function isPhoneOk(phone: string): boolean {
+export function isPhoneOk(phone: string): boolean {
     phone = phone.trim();
     if (phone.length < 10) return false;
     if (isNaN(Number(phone.slice(1)))) return false;
@@ -14,7 +14,7 @@ function isPhoneOk(phone: string): boolean {
     return true;
 }
 
-function isAddressOk(address: string): boolean {
+export function isAddressOk(address: string): boolean {
     address = address.trim();
     const adressArr = address.split(' ');
     if (adressArr.length < 3) return false;
@@ -22,28 +22,32 @@ function isAddressOk(address: string): boolean {
     return true;
 }
 
-function isEmailOk(email: string): boolean {
+export function isEmailOk(email: string): boolean {
     email = email.trim();
     const EMAIL_REGEXP = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/iu;
     if (!EMAIL_REGEXP.test(email)) return false;
     return true;
 }
 
-function isExpiryOk(expiry: string): boolean {
-    if (expiry.length < 5) return false;
+export function isExpiryOk(expiry: string): boolean {
+    if (expiry.length !== 5) return false;
+
+    const expiryArrStr = expiry.split('/');
+    if (expiryArrStr[0].length !== 2 || expiryArrStr[1].length !== 2) return false;
+
     const expiryArr = expiry.split('/').map((i) => Number(i));
     if (expiryArr[0] > 12 || expiryArr[0] === 0) return false;
     if (expiryArr[1] < 23 || expiryArr[1] === 0) return false;
     return true;
 }
 
-function isCreditNumberOk(creditNumber: string): boolean {
+export function isCreditNumberOk(creditNumber: string): boolean {
     if (creditNumber.length < 19) return false;
     return true;
 }
 
-function isCVCOk(cvv: string): boolean {
-    if (cvv.length < 3) return false;
+export function isCVCOk<Type>(cvv: Type): boolean {
+    if ((cvv as string).length !== 3) return false;
     return true;
 }
 
@@ -265,7 +269,7 @@ export function openModal() {
             (document.querySelector('.cc-expiry-input') as HTMLInputElement).style.backgroundColor = '#ffffff';
         }
 
-        if (!isCVCOk((document.querySelector('.cc-cvc-input') as HTMLInputElement).value)) {
+        if (!isCVCOk<String>((document.querySelector('.cc-cvc-input') as HTMLInputElement).value)) {
             (document.querySelector('.cc-cvc-input') as HTMLInputElement).style.backgroundColor = '#ee7777';
             res = false;
         } else {
