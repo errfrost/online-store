@@ -1,7 +1,7 @@
 import { ProductCard } from '../service/StoreService';
 import { IProductCard } from '../types/interface';
 
-function sortProducts(productCards: ProductCard[], sortString: string): ProductCard[] {
+export function sortProducts(productCards: ProductCard[], sortString: string): ProductCard[] {
     if (sortString !== '') {
         let sortField: string = sortString.split('.')[0];
         let sortDirection: string = sortString.split('.')[1];
